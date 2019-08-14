@@ -4,10 +4,10 @@ grammar la;
    public static String grupo="740951 587087 586730 619884";
 }
 
-programa: declaracoes 'algoritmo' corpo 'fim_algoritmo' EOF;
+programa: declaracoes 'algoritmo' corpo 'fim_algoritmo';
 declaracoes: declaracao_local_ou_global*;
 declaracao_local_ou_global: declaracao_local | declaracao_global;
-declaracao_local:'declare' variavel
+declaracao_local: 'declare' variavel
 				| 'constante' IDENT ':' tipo_basico '=' valor_constante
 				| 'tipo'  IDENT ':' tipo;
 variavel: identificador (',' identificador)* ':' tipo;
@@ -25,7 +25,7 @@ declaracao_global: 'procedimento' IDENT '(' parametros ? ')' declaracao_local ? 
 				   cmd ? 'fim_funcao';
 parametro: 'var' ? identificador (',' identificador)* ':' tipo_estendido;
 parametros: parametro (',' parametro)*;
-corpo: declaracao_local ? cmd ?;
+corpo: declaracao_local* cmd*;
 cmd: cmdLeia | cmdEscreva | cmdSe | cmdCaso | cmdPara | cmdEnquanto
    | cmdFaca | cmdAtribuicao | cmdChamada | cmdRetorne;
 cmdLeia: 'leia' '(' '^' ? identificador (',' '^' ? identificador)* ')';
@@ -67,9 +67,9 @@ operador_logico_nivel_1: 'ou';
 operador_logico_nivel_2: 'e';
 
 IDENT: ('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '0'..'9' | '_')*;
-CADEIA: '\'' ~('\n' | '\r' | '\'')* '\'' | '"' ~('\n' | '\r' | '"')* '"';
+CADEIA: '"' ~('\n' | '\r' | '\'')* '\'' | '"' ~('\n' | '\r' | '"')* '"';
 NUM_INT: ('0'..'9')+;
-NUM_REAL: NUM_INT '.' ('0'..'9')*;
+NUM_REAL: NUM_INT '.' ('0'..'9')+;
 
-COMENTARIO:	'{' ~('\n' | '\r')* '}' {skip();};
+COMENTARIO:	'{' ~('\n' | '\r' )* '}' {skip();};
 WS	: (' ' | '\t' | '\r' | '\n') {skip();};
