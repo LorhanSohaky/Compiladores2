@@ -18,11 +18,11 @@ tipo_basico: 'literal' | 'inteiro' | 'real' | 'logico';
 tipo_basico_identificador: tipo_basico | IDENT;
 tipo_estendido: '^' ? tipo_basico_identificador;
 valor_constante: CADEIA | NUM_INT | NUM_REAL | 'verdadeiro' | 'falso';
-registro: 'registro' variavel ? 'fim_registro';
-declaracao_global: 'procedimento' IDENT '(' parametros ? ')' declaracao_local ? cmd ?
+registro: 'registro' variavel* 'fim_registro';
+declaracao_global: 'procedimento' IDENT '(' parametros ? ')' declaracao_local* cmd*
 				   'fim_procedimento'
-				 | 'funcao' IDENT '(' parametros ? ')' ':' tipo_estendido declaracao_local ?
-				   cmd ? 'fim_funcao';
+				 | 'funcao' IDENT '(' parametros ? ')' ':' tipo_estendido declaracao_local*
+				   cmd* 'fim_funcao';
 parametro: 'var' ? identificador (',' identificador)* ':' tipo_estendido;
 parametros: parametro (',' parametro)*;
 corpo: declaracao_local* cmd*;
@@ -30,7 +30,7 @@ cmd: cmdLeia | cmdEscreva | cmdSe | cmdCaso | cmdPara | cmdEnquanto
    | cmdFaca | cmdAtribuicao | cmdChamada | cmdRetorne;
 cmdLeia: 'leia' '(' '^' ? identificador (',' '^' ? identificador)* ')';
 cmdEscreva: 'escreva' '(' expressao (',' expressao)* ')';
-cmdSe: 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fimse';
+cmdSe: 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fim_se';
 cmdCaso: 'caso' expressao_aritmetica 'seja' selecao ('senao' cmd*)? 'fim_caso';
 cmdPara: 'para' IDENT '<-' expressao_aritmetica 'ate' expressao_aritmetica 'faca' cmd* 'fim_para';
 cmdEnquanto: 'enquanto' expressao 'faca' cmd* 'fim_enquanto';
