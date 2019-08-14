@@ -1,10 +1,12 @@
 #!/bin/bash
 
-rm -rd temp
+if [ -d saida_testes ]; then
+    rm -rd saida_testes
+fi
 
 ./generateGrammar.sh
 
-# TODO generateJar
+./generateJar.sh
 
-java -jar AnalisadorLA/libs/CorretorTrabalho1.jar "java -jar meu_compilador.jar" gcc temp casosDeTesteT1 "740951 587087 586730 619884" sintatico
+java -jar libs/CorretorTrabalho1.jar "java -jar meu_compilador.jar" gcc saida_testes casosDeTesteT1 "740951 587087 586730 619884" sintatico
 

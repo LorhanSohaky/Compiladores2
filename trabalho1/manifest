@@ -1,0 +1,2 @@
+Main-Class: la.linguagem.AnalisadorLA.App
+Class-Path: libs/antlr-4.7.2-complete.jar
