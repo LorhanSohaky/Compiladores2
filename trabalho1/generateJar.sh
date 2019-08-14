@@ -3,7 +3,7 @@
 JAVA_FILES="$(find AnalisadorLA/src/ -name "*.java" -type f)"
 
 
-javac -cp "libs/antlr-4.7.2-complete.jar" $JAVA_FILES
+javac -d AnalisadorLA/bin -cp "libs/antlr-4.7.2-complete.jar" $JAVA_FILES
 
 jar cfm meu_compilador.jar manifest -C AnalisadorLA/bin/ .
 
