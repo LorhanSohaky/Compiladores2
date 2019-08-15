@@ -155,6 +155,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitPrograma(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitPrograma(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgramaContext programa() throws RecognitionException {
@@ -202,6 +207,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitDeclaracoes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitDeclaracoes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -257,6 +267,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitDeclaracao_local_ou_global(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitDeclaracao_local_ou_global(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -325,6 +340,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitDeclaracao_local(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitDeclaracao_local(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Declaracao_localContext declaracao_local() throws RecognitionException {
@@ -389,14 +409,16 @@ public class laParser extends Parser {
 	}
 
 	public static class VariavelContext extends ParserRuleContext {
+		public IdentificadorContext identificador;
+		public List<IdentificadorContext> identificadores = new ArrayList<IdentificadorContext>();
+		public TipoContext tipo() {
+			return getRuleContext(TipoContext.class,0);
+		}
 		public List<IdentificadorContext> identificador() {
 			return getRuleContexts(IdentificadorContext.class);
 		}
 		public IdentificadorContext identificador(int i) {
 			return getRuleContext(IdentificadorContext.class,i);
-		}
-		public TipoContext tipo() {
-			return getRuleContext(TipoContext.class,0);
 		}
 		public VariavelContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -410,6 +432,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitVariavel(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitVariavel(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final VariavelContext variavel() throws RecognitionException {
@@ -420,7 +447,8 @@ public class laParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(130);
-			identificador();
+			((VariavelContext)_localctx).identificador = identificador();
+			((VariavelContext)_localctx).identificadores.add(((VariavelContext)_localctx).identificador);
 			setState(135);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -430,7 +458,8 @@ public class laParser extends Parser {
 				setState(131);
 				match(T__7);
 				setState(132);
-				identificador();
+				((VariavelContext)_localctx).identificador = identificador();
+				((VariavelContext)_localctx).identificadores.add(((VariavelContext)_localctx).identificador);
 				}
 				}
 				setState(137);
@@ -473,6 +502,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitIdentificador(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitIdentificador(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -535,6 +569,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitDimensao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitDimensao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final DimensaoContext dimensao() throws RecognitionException {
@@ -594,6 +633,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTipo(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTipo(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TipoContext tipo() throws RecognitionException {
@@ -650,6 +694,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTipo_basico(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTipo_basico(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Tipo_basicoContext tipo_basico() throws RecognitionException {
@@ -698,6 +747,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTipo_basico_identificador(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTipo_basico_identificador(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -756,6 +810,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTipo_estendido(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTipo_estendido(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Tipo_estendidoContext tipo_estendido() throws RecognitionException {
@@ -805,6 +864,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitValor_constante(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitValor_constante(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -856,6 +920,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitRegistro(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitRegistro(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -928,6 +997,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitDeclaracao_global(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitDeclaracao_global(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1086,6 +1160,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParametro(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParametro(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParametroContext parametro() throws RecognitionException {
@@ -1159,6 +1238,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParametros(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParametros(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParametrosContext parametros() throws RecognitionException {
@@ -1223,6 +1307,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCorpo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCorpo(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1317,6 +1406,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmd(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmd(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdContext cmd() throws RecognitionException {
@@ -1410,6 +1504,8 @@ public class laParser extends Parser {
 	}
 
 	public static class CmdLeiaContext extends ParserRuleContext {
+		public IdentificadorContext identificador;
+		public List<IdentificadorContext> identificadores = new ArrayList<IdentificadorContext>();
 		public List<IdentificadorContext> identificador() {
 			return getRuleContexts(IdentificadorContext.class);
 		}
@@ -1427,6 +1523,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdLeia(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdLeia(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1452,7 +1553,8 @@ public class laParser extends Parser {
 			}
 
 			setState(282);
-			identificador();
+			((CmdLeiaContext)_localctx).identificador = identificador();
+			((CmdLeiaContext)_localctx).identificadores.add(((CmdLeiaContext)_localctx).identificador);
 			setState(290);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -1472,7 +1574,8 @@ public class laParser extends Parser {
 				}
 
 				setState(287);
-				identificador();
+				((CmdLeiaContext)_localctx).identificador = identificador();
+				((CmdLeiaContext)_localctx).identificadores.add(((CmdLeiaContext)_localctx).identificador);
 				}
 				}
 				setState(292);
@@ -1512,6 +1615,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdEscreva(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdEscreva(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1580,6 +1688,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdSe(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdSe(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1674,6 +1787,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdCaso(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdCaso(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdCasoContext cmdCaso() throws RecognitionException {
@@ -1756,6 +1874,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdPara(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdPara(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdParaContext cmdPara() throws RecognitionException {
@@ -1830,6 +1953,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdEnquanto(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdEnquanto(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdEnquantoContext cmdEnquanto() throws RecognitionException {
@@ -1896,6 +2024,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdFaca(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdFaca(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdFacaContext cmdFaca() throws RecognitionException {
@@ -1957,6 +2090,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdAtribuicao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdAtribuicao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdAtribuicaoContext cmdAtribuicao() throws RecognitionException {
@@ -2014,6 +2152,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdChamada(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdChamada(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2077,6 +2220,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitCmdRetorne(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitCmdRetorne(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CmdRetorneContext cmdRetorne() throws RecognitionException {
@@ -2120,6 +2268,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitSelecao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitSelecao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2179,6 +2332,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitItem_selecao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitItem_selecao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Item_selecaoContext item_selecao() throws RecognitionException {
@@ -2237,6 +2395,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitConstantes(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitConstantes(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2300,6 +2463,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitNumero_intervalo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitNumero_intervalo(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2370,6 +2538,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_unario(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_unario(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Operador_unarioContext operador_unario() throws RecognitionException {
@@ -2417,6 +2590,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitExpressao_aritmetica(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitExpressao_aritmetica(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2485,6 +2663,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTermo(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTermo(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TermoContext termo() throws RecognitionException {
@@ -2550,6 +2733,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitFator(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitFator(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final FatorContext fator() throws RecognitionException {
@@ -2603,6 +2791,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_nivel_1(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_nivel_1(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Operador_nivel_1Context operador_nivel_1() throws RecognitionException {
@@ -2647,6 +2840,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_nivel_2(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_nivel_2(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2693,6 +2891,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_nivel_3(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_nivel_3(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Operador_nivel_3Context operador_nivel_3() throws RecognitionException {
@@ -2737,6 +2940,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParcela(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParcela(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2817,6 +3025,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParcela_unaria(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParcela_unaria(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2929,6 +3142,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParcela_nao_unaria(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParcela_nao_unaria(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Parcela_nao_unariaContext parcela_nao_unaria() throws RecognitionException {
@@ -2991,6 +3209,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitExpressao_relacional(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitExpressao_relacional(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Expressao_relacionalContext expressao_relacional() throws RecognitionException {
@@ -3039,6 +3262,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_relacional(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_relacional(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3096,6 +3324,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitExpressao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitExpressao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3162,6 +3395,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitTermo_logico(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitTermo_logico(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Termo_logicoContext termo_logico() throws RecognitionException {
@@ -3218,6 +3456,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitFator_logico(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitFator_logico(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Fator_logicoContext fator_logico() throws RecognitionException {
@@ -3267,6 +3510,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitParcela_logica(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitParcela_logica(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -3336,6 +3584,11 @@ public class laParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_logico_nivel_1(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_logico_nivel_1(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Operador_logico_nivel_1Context operador_logico_nivel_1() throws RecognitionException {
@@ -3371,6 +3624,11 @@ public class laParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof laListener ) ((laListener)listener).exitOperador_logico_nivel_2(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof laVisitor ) return ((laVisitor<? extends T>)visitor).visitOperador_logico_nivel_2(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 

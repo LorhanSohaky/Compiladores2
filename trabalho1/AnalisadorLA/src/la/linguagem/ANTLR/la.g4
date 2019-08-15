@@ -14,7 +14,7 @@ declaracao_local_ou_global: declaracao_local | declaracao_global;
 declaracao_local: 'declare' variavel
 				| 'constante' IDENT ':' tipo_basico '=' valor_constante
 				| 'tipo'  IDENT ':' tipo;
-variavel: identificador (',' identificador)* ':' tipo;
+variavel: identificadores+=identificador (',' identificadores+=identificador)* ':' tipo;
 identificador: IDENT ('.' IDENT)* dimensao;
 dimensao:('['expressao_aritmetica']')*;
 tipo: registro | tipo_estendido;
@@ -32,7 +32,7 @@ parametros: parametro (',' parametro)*;
 corpo: declaracao_local* cmd*;
 cmd: cmdLeia | cmdEscreva | cmdSe | cmdCaso | cmdPara | cmdEnquanto
    | cmdFaca | cmdAtribuicao | cmdChamada | cmdRetorne;
-cmdLeia: 'leia' '(' '^' ? identificador (',' '^' ? identificador)* ')';
+cmdLeia: 'leia' '(' '^' ? identificadores+=identificador (',' '^' ? identificadores+=identificador)* ')';
 cmdEscreva: 'escreva' '(' expressao (',' expressao)* ')';
 cmdSe: 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fim_se';
 cmdCaso: 'caso' expressao_aritmetica 'seja' selecao ('senao' cmd*)? 'fim_caso';
