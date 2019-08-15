@@ -11,6 +11,9 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
+import la.linguagem.ANTLR.laLexer;
+import la.linguagem.ANTLR.laParser;
+
 public class App {
 	public static void main(String[] args) throws IOException {
 		SaidaParser out = new SaidaParser();
@@ -21,21 +24,21 @@ public class App {
 		cs = CharStreams.fromStream(casoDeTesteEntrada);
 		laLexer lexer = new laLexer(cs);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		try{
+		try {
 			laParser parser = new laParser(tokens);
 
 			parser.addErrorListener(new T1ErrorListener(out));
 			parser.programa();
 			if (!out.isModificado()) {
 				/*
-				* out.println("Tabela de simbolos:");
-				* 
-				* TabelaDeSimbolos.imprimirTabela(out); System.out.print(out);
-				*/
+				 * out.println("Tabela de simbolos:");
+				 * 
+				 * TabelaDeSimbolos.imprimirTabela(out); System.out.print(out);
+				 */
 			}
-		}catch(ParseCancellationException pce) {
-			if(pce.getMessage() != null) {
-				out.println(pce.getMessage ());
+		} catch (ParseCancellationException pce) {
+			if (pce.getMessage() != null) {
+				out.println(pce.getMessage());
 			}
 		}
 
