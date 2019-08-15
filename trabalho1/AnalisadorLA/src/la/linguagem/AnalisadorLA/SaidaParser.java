@@ -6,26 +6,36 @@ package la.linguagem.AnalisadorLA;
 
 public class SaidaParser {
 
-    StringBuffer conteudo;
-    boolean modificado;
+	private StringBuffer conteudo;
+	boolean modificado;
+	private static SaidaParser instance = null;
 
-    public SaidaParser() {
-        conteudo = new StringBuffer();
-        modificado = false;
-    }
+	private SaidaParser() {
+		conteudo = new StringBuffer();
+		modificado = false;
+	}
 
-    public void println(String texto) {
-        if(!modificado) modificado = true;
-        conteudo.append(texto);
-        conteudo.append("\n");
-    }
-    
-    public boolean isModificado() {
-        return modificado;
-    }
+	public static SaidaParser getInstance() {
+		if (SaidaParser.instance == null) {
+			instance = new SaidaParser();
+		}
+		return instance;
 
-    @Override
-    public String toString() {
-        return conteudo.toString();
-    }
+	}
+
+	public void println(String texto) {
+		if (!modificado)
+			modificado = true;
+		conteudo.append(texto);
+		conteudo.append("\n");
+	}
+
+	public boolean isModificado() {
+		return modificado;
+	}
+
+	@Override
+	public String toString() {
+		return conteudo.toString();
+	}
 }
