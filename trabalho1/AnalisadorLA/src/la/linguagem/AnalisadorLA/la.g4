@@ -1,7 +1,11 @@
 grammar la;
 
-@members {
+@lexer::members {
    public static String grupo="740951 587087 586730 619884";
+
+   void erroLexico(String mensagem) {
+      throw new ParseCancellationException(mensagem);
+   }
 }
 
 programa: declaracoes 'algoritmo' corpo 'fim_algoritmo';
@@ -73,3 +77,6 @@ NUM_REAL: NUM_INT '.' ('0'..'9')+;
 
 COMENTARIO:	'{' ~('\n' | '\r' )* '}' {skip();};
 WS	: (' ' | '\t' | '\r' | '\n') {skip();};
+
+COMENTARIO_NAO_FECHADO: '{' ~('}'|'\n'|'\r')* '\n' { { erroLexico("Linha "+getLine()+": comentario nao fechado"); }; };
+ERRO: . { erroLexico("Linha "+getLine()+": "+getText()+" - simbolo nao identificado"); };
