@@ -23,7 +23,13 @@ public class App {
 		inputFileName = args[0];
 		outputFileName = args[1];
 
-		AnalisarSemantica();
+		if (inputFileName.contains("semantico")) {
+			AnalisarSemantica();
+		} else if (inputFileName.contains("sem_erros")) {
+			GerarCodigo();
+		} else if (inputFileName.contains("sintatico")) {
+			AnalisarGramatica();
+		}
 
 	}
 
@@ -38,9 +44,6 @@ public class App {
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		try {
 			laParser parser = new laParser(tokens);
-			ProgramaContext arvore = parser.programa();
-			AnalisadorSemantico as = new AnalisadorSemantico();
-			as.visitPrograma(arvore);
 
 			parser.addErrorListener(new T1ErrorListener(out));
 			parser.programa();
@@ -83,5 +86,8 @@ public class App {
 		fw = new FileWriter(outputFileName);
 		fw.write(out.toString());
 		fw.close();
+	}
+
+	private static void GerarCodigo() {
 	}
 }
