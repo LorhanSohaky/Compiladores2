@@ -484,12 +484,13 @@ public class laParser extends Parser {
 	}
 
 	public static class IdentificadorContext extends ParserRuleContext {
+		public Token identificador1;
+		public DimensaoContext dimensao() {
+			return getRuleContext(DimensaoContext.class,0);
+		}
 		public List<TerminalNode> IDENT() { return getTokens(laParser.IDENT); }
 		public TerminalNode IDENT(int i) {
 			return getToken(laParser.IDENT, i);
-		}
-		public DimensaoContext dimensao() {
-			return getRuleContext(DimensaoContext.class,0);
 		}
 		public IdentificadorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -518,7 +519,7 @@ public class laParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(141);
-			match(IDENT);
+			((IdentificadorContext)_localctx).identificador1 = match(IDENT);
 			setState(146);
 			_errHandler.sync(this);
 			_la = _input.LA(1);

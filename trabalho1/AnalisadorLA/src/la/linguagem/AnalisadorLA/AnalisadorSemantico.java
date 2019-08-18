@@ -2,7 +2,6 @@ package la.linguagem.AnalisadorLA;
 
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser;
-import la.linguagem.ANTLR.laParser.CmdLeiaContext;
 import la.linguagem.ANTLR.laParser.IdentificadorContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 
@@ -35,7 +34,12 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		}
 
 		for (IdentificadorContext variavel : ctx.identificadores) {
-			pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipo);
+			if (pilhaDeTabelas.existeSimbolo(variavel.getText())) {
+				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + variavel.getText()
+						+ " ja declarado anteriormente");
+			} else {
+				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipo);
+			}
 		}
 
 		return null;
@@ -43,13 +47,10 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	}
 
 	@Override
-	public Void visitCmdLeia(CmdLeiaContext ctx) {
-
-		for (IdentificadorContext variavel : ctx.identificadores) {
-			if (!pilhaDeTabelas.existeSimbolo(variavel.getText())) {
-				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + variavel.getText()
-						+ " nao declarado");
-			}
+	public Void visitIdentificador(IdentificadorContext ctx) {
+		if (!pilhaDeTabelas.existeSimbolo(ctx.identificador1.getText())) {
+			saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + ctx.identificador1.getText()
+					+ " nao declarado");
 		}
 
 		return null;
