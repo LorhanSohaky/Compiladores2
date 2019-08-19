@@ -30,6 +30,15 @@ public class PilhaDeTabelas {
 		return false;
 	}
 
+	public String getTipo(String nome) {
+		for (TabelaDeSimbolos tabela : pilha) {
+			if (tabela.existeSimbolo(nome)) {
+				return tabela.getTipo(nome);
+			}
+		}
+		return null;
+	}
+
 	public void desempilhar() {
 		TabelaDeSimbolos ret = pilha.pop();
 		// saida.println(ret.toString());
