@@ -36,8 +36,8 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	@Override
 	public Void visitVariavel(VariavelContext ctx) {
 
-		String tipo = ctx.tipo().getText();
-		tipo = tipo.startsWith("^") ? tipo.substring(1) : tipo;
+		String tipoCompleto = ctx.tipo().getText();
+		String tipo = tipoCompleto.startsWith("^") ? tipoCompleto.substring(1) : tipoCompleto;
 
 		if (!tipo.equals("literal") && !tipo.equals("inteiro") && !tipo.equals("real") && !tipo.equals("logico")
 				&& !pilhaDeTabelas.existeSimbolo(tipo)) {
@@ -50,7 +50,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + variavel.getText()
 						+ " ja declarado anteriormente");
 			} else {
-				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipo);
+				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipoCompleto);
 			}
 		}
 
@@ -72,10 +72,28 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
 		String tipoDoIdentificador = pilhaDeTabelas.getTipo(ctx.identificador().getText());
 		String tipoDaExpressao = verificaTipo(ctx.expressao());
-		if (!isTiposCompativeis(tipoDoIdentificador, tipoDaExpressao)) {
-			// saida.println(tipoDaExpressao + " " + tipoDoIdentificador);
+
+		boolean incompativel = false;
+
+		if (tipoDoIdentificador.startsWith("^")) {
+			if (tipoDaExpressao.startsWith("&") && !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
+				incompativel = true;
+			} else if (ctx.getStart().getText().equals("^")
+					&& !isTiposCompativeis(tipoDaExpressao.substring(1), tipoDaExpressao)) {
+				incompativel = true;
+			}
+
+		} else {
+			if (!isTiposCompativeis(tipoDoIdentificador, tipoDaExpressao)) {
+				incompativel = true;
+			}
+		}
+
+		if (incompativel) {
+			String destino = ctx.getStart().getText().equals("^") ? "^" + ctx.identificador().getText()
+					: ctx.identificador().getText();
 			saida.println("Linha " + ctx.identificador().getStart().getLine() + ": atribuicao nao compativel para "
-					+ ctx.identificador().getText());
+					+ destino);
 		}
 
 		return super.visitChildren(ctx);
@@ -137,8 +155,6 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		if (ctx.termo().size() > 1) {
 			for (int i = 1; i < ctx.termo().size(); i++) {
 				tipo = castTipo(tipo, verificaTipo(ctx.termo(i)));
-				// saida.println(ctx.termo(i).getText() + ": " + tipo + " " +
-				// verificaTipo(ctx.termo(i)));
 			}
 		}
 		return tipo;
