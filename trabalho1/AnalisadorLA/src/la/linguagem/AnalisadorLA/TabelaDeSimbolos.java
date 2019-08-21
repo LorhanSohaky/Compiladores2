@@ -12,13 +12,13 @@ public class TabelaDeSimbolos {
 		this.escopo = escopo;
 	}
 
-	public void adicionarSimbolo(String nome, String tipo) {
-		simbolos.add(new EntradaTabelaDeSimbolos(nome, tipo));
+	public void adicionarSimbolo(String nome, String tipo, String simbolo) {
+		simbolos.add(new EntradaTabelaDeSimbolos(nome, tipo, simbolo));
 	}
 
-	public void adicionarSimbolos(List<String> nomes, String tipo) {
+	public void adicionarSimbolos(List<String> nomes, String tipo, String simbolo) {
 		for (String s : nomes) {
-			simbolos.add(new EntradaTabelaDeSimbolos(s, tipo));
+			simbolos.add(new EntradaTabelaDeSimbolos(s, tipo, simbolo));
 		}
 	}
 
@@ -35,6 +35,19 @@ public class TabelaDeSimbolos {
 		for (EntradaTabelaDeSimbolos etds : simbolos) {
 			if (etds.getNome().equals(nome)) {
 				return etds.getTipo();
+			}
+		}
+		return "false";
+	}
+
+	public String getEscopo() {
+		return this.escopo;
+	}
+
+	public String getSimbolo(String nome) {
+		for (EntradaTabelaDeSimbolos etds : simbolos) {
+			if (etds.getNome().equals(nome)) {
+				return etds.getSimbolo();
 			}
 		}
 		return "false";

@@ -29,11 +29,26 @@ public interface laVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaracao_local_ou_global(laParser.Declaracao_local_ou_globalContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link laParser#declaracao_local}.
+	 * Visit a parse tree produced by the {@code declaracaoLocalVariavel}
+	 * labeled alternative in {@link laParser#declaracao_local}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclaracao_local(laParser.Declaracao_localContext ctx);
+	T visitDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declaracaoLocalConstante}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declaracaoLocalTipo}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link laParser#variavel}.
 	 * @param ctx the parse tree
@@ -89,11 +104,19 @@ public interface laVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRegistro(laParser.RegistroContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link laParser#declaracao_global}.
+	 * Visit a parse tree produced by the {@code declaracao_global_procedimento}
+	 * labeled alternative in {@link laParser#declaracao_global}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDeclaracao_global(laParser.Declaracao_globalContext ctx);
+	T visitDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declaracao_global_funcao}
+	 * labeled alternative in {@link laParser#declaracao_global}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link laParser#parametro}.
 	 * @param ctx the parse tree

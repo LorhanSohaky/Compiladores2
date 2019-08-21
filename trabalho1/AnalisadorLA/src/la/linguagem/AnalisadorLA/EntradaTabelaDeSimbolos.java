@@ -1,11 +1,12 @@
 package la.linguagem.AnalisadorLA;
 
 public class EntradaTabelaDeSimbolos {
-	private String nome, tipo;
+	private String nome, tipo, simbolo;
 
-	public EntradaTabelaDeSimbolos(String nome, String tipo) {
+	public EntradaTabelaDeSimbolos(String nome, String tipo, String simbolo) {
 		this.nome = nome;
 		this.tipo = tipo;
+		this.simbolo = simbolo;
 	}
 
 	public String getNome() {
@@ -14,6 +15,10 @@ public class EntradaTabelaDeSimbolos {
 
 	public String getTipo() {
 		return tipo;
+	}
+
+	public String getSimbolo() {
+		return simbolo;
 	}
 
 	@Override

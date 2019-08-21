@@ -11,9 +11,9 @@ grammar la;
 programa: declaracoes 'algoritmo' corpo 'fim_algoritmo';
 declaracoes: declaracao_local_ou_global*;
 declaracao_local_ou_global: declaracao_local | declaracao_global;
-declaracao_local: 'declare' variavel
-				| 'constante' IDENT ':' tipo_basico '=' valor_constante
-				| 'tipo'  IDENT ':' tipo;
+declaracao_local: 'declare' variavel #declaracaoLocalVariavel
+				| 'constante' IDENT ':' tipo_basico '=' valor_constante #declaracaoLocalConstante
+				| 'tipo'  IDENT ':' tipo #declaracaoLocalTipo;
 variavel: identificadores+=identificador (',' identificadores+=identificador)* ':' tipo;
 identificador: identificador1=IDENT ('.' IDENT)* dimensao;
 dimensao:('['expressao_aritmetica']')*;
@@ -24,9 +24,9 @@ tipo_estendido: '^' ? tipo_basico_identificador;
 valor_constante: CADEIA | NUM_INT | NUM_REAL | 'verdadeiro' | 'falso';
 registro: 'registro' variavel* 'fim_registro';
 declaracao_global: 'procedimento' IDENT '(' parametros ? ')' declaracao_local* cmd*
-				   'fim_procedimento'
+				   'fim_procedimento' # declaracao_global_procedimento
 				 | 'funcao' IDENT '(' parametros ? ')' ':' tipo_estendido declaracao_local*
-				   cmd* 'fim_funcao';
+				   cmd* 'fim_funcao' # declaracao_global_funcao	;
 parametro: 'var' ? identificador (',' identificador)* ':' tipo_estendido;
 parametros: parametro (',' parametro)*;
 corpo: declaracao_local* cmd*;

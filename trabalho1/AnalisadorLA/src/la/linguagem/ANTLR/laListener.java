@@ -38,15 +38,41 @@ public interface laListener extends ParseTreeListener {
 	 */
 	void exitDeclaracao_local_ou_global(laParser.Declaracao_local_ou_globalContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link laParser#declaracao_local}.
+	 * Enter a parse tree produced by the {@code declaracaoLocalVariavel}
+	 * labeled alternative in {@link laParser#declaracao_local}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclaracao_local(laParser.Declaracao_localContext ctx);
+	void enterDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link laParser#declaracao_local}.
+	 * Exit a parse tree produced by the {@code declaracaoLocalVariavel}
+	 * labeled alternative in {@link laParser#declaracao_local}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclaracao_local(laParser.Declaracao_localContext ctx);
+	void exitDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declaracaoLocalConstante}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declaracaoLocalConstante}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declaracaoLocalTipo}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declaracaoLocalTipo}
+	 * labeled alternative in {@link laParser#declaracao_local}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link laParser#variavel}.
 	 * @param ctx the parse tree
@@ -138,15 +164,29 @@ public interface laListener extends ParseTreeListener {
 	 */
 	void exitRegistro(laParser.RegistroContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link laParser#declaracao_global}.
+	 * Enter a parse tree produced by the {@code declaracao_global_procedimento}
+	 * labeled alternative in {@link laParser#declaracao_global}.
 	 * @param ctx the parse tree
 	 */
-	void enterDeclaracao_global(laParser.Declaracao_globalContext ctx);
+	void enterDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link laParser#declaracao_global}.
+	 * Exit a parse tree produced by the {@code declaracao_global_procedimento}
+	 * labeled alternative in {@link laParser#declaracao_global}.
 	 * @param ctx the parse tree
 	 */
-	void exitDeclaracao_global(laParser.Declaracao_globalContext ctx);
+	void exitDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declaracao_global_funcao}
+	 * labeled alternative in {@link laParser#declaracao_global}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declaracao_global_funcao}
+	 * labeled alternative in {@link laParser#declaracao_global}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link laParser#parametro}.
 	 * @param ctx the parse tree

@@ -38,7 +38,21 @@ public class laBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements laV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclaracao_local(laParser.Declaracao_localContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -108,7 +122,14 @@ public class laBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements laV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDeclaracao_global(laParser.Declaracao_globalContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

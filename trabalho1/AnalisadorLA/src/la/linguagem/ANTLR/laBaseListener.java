@@ -52,13 +52,37 @@ public class laBaseListener implements laListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclaracao_local(laParser.Declaracao_localContext ctx) { }
+	@Override public void enterDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclaracao_local(laParser.Declaracao_localContext ctx) { }
+	@Override public void exitDeclaracaoLocalVariavel(laParser.DeclaracaoLocalVariavelContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclaracaoLocalConstante(laParser.DeclaracaoLocalConstanteContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclaracaoLocalTipo(laParser.DeclaracaoLocalTipoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -172,13 +196,25 @@ public class laBaseListener implements laListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclaracao_global(laParser.Declaracao_globalContext ctx) { }
+	@Override public void enterDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDeclaracao_global(laParser.Declaracao_globalContext ctx) { }
+	@Override public void exitDeclaracao_global_procedimento(laParser.Declaracao_global_procedimentoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclaracao_global_funcao(laParser.Declaracao_global_funcaoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

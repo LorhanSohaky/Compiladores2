@@ -3,12 +3,17 @@ package la.linguagem.AnalisadorLA;
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
+import la.linguagem.ANTLR.laParser.CmdRetorneContext;
+import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
+import la.linguagem.ANTLR.laParser.Declaracao_global_funcaoContext;
+import la.linguagem.ANTLR.laParser.Declaracao_global_procedimentoContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
 import la.linguagem.ANTLR.laParser.Expressao_aritmeticaContext;
 import la.linguagem.ANTLR.laParser.Expressao_relacionalContext;
 import la.linguagem.ANTLR.laParser.FatorContext;
 import la.linguagem.ANTLR.laParser.Fator_logicoContext;
 import la.linguagem.ANTLR.laParser.IdentificadorContext;
+import la.linguagem.ANTLR.laParser.ParametroContext;
 import la.linguagem.ANTLR.laParser.ParcelaContext;
 import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
@@ -50,7 +55,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + variavel.getText()
 						+ " ja declarado anteriormente");
 			} else {
-				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipoCompleto);
+				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipoCompleto, "variavel");
 			}
 		}
 
@@ -99,6 +104,50 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		return super.visitChildren(ctx);
 	}
 
+	@Override
+	public Object visitDeclaracao_global_procedimento(Declaracao_global_procedimentoContext ctx) {
+		String nomeProcedimento = ctx.IDENT().getText();
+		if (pilhaDeTabelas.existeSimbolo(nomeProcedimento)) {
+			// TODO ver saída de erro ideal
+		} else {
+			pilhaDeTabelas.topo().adicionarSimbolo(nomeProcedimento, "null", "procedimento");
+
+			pilhaDeTabelas.empilhar(new TabelaDeSimbolos(nomeProcedimento));
+			for (ParametroContext parametro : ctx.parametros().parametro()) {
+				visitParametro(parametro);
+			}
+		}
+
+		return super.visitChildren(ctx);
+	}
+
+	@Override
+	public Object visitDeclaracao_global_funcao(Declaracao_global_funcaoContext ctx) {
+		String nomeFuncao = ctx.IDENT().getText();
+		String tipoRetorno = ctx.tipo_estendido().getText();
+
+		if (pilhaDeTabelas.existeSimbolo(nomeFuncao)) {
+			// TODO ver saída de erro ideal
+		} else {
+			pilhaDeTabelas.topo().adicionarSimbolo(nomeFuncao, tipoRetorno, "funcao");
+
+			pilhaDeTabelas.empilhar(new TabelaDeSimbolos(nomeFuncao));
+			for (ParametroContext parametro : ctx.parametros().parametro()) {
+				visitParametro(parametro);
+			}
+		}
+		return super.visitChildren(ctx);
+	}
+
+	@Override
+	public Object visitParametro(ParametroContext ctx) {
+		String tipo = ctx.tipo_estendido().getText();
+		for (IdentificadorContext identificador : ctx.identificador()) {
+			pilhaDeTabelas.topo().adicionarSimbolo(identificador.getText(), tipo, "parametro");
+		}
+		return super.visitChildren(ctx);
+	}
+
 	private String verificaTipo(ExpressaoContext ctx) {
 		String tipo = verificaTipo(ctx.termo_logico(0));
 		if (ctx.termo_logico().size() > 1) {
@@ -107,6 +156,27 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			}
 		}
 		return tipo;
+	}
+
+	@Override
+	public Object visitDeclaracaoLocalTipo(DeclaracaoLocalTipoContext ctx) {
+		String novoTipo = ctx.IDENT().getText();
+		if (pilhaDeTabelas.existeSimbolo(novoTipo)) {
+			// TODO exibir erro adequado
+		} else {
+			pilhaDeTabelas.topo().adicionarSimbolo(novoTipo, ctx.tipo().getText(), "tipo");
+		}
+
+		return super.visitChildren(ctx);
+	}
+
+	@Override
+	public Object visitCmdRetorne(CmdRetorneContext ctx) {
+		String escopo = pilhaDeTabelas.topo().getEscopo();
+		if (!pilhaDeTabelas.getSimbolo(escopo).equals("funcao")) {
+			saida.println("Linha " + ctx.getStart().getLine() + ": comando retorne nao permitido nesse escopo");
+		}
+		return null;
 	}
 
 	private String verificaTipo(Termo_logicoContext ctx) {
@@ -197,7 +267,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			}
 			return tipoIdentificador;
 		} else if (ctx.IDENT() != null) {
-			return "aquiiii"; // TODO PENSAR MELHOR, provavelmente é o campo de uma struct
+			return pilhaDeTabelas.getTipo(ctx.IDENT().getText());
 		} else if (ctx.NUM_INT() != null) {
 			return "inteiro";
 		} else if (ctx.NUM_REAL() != null) {
