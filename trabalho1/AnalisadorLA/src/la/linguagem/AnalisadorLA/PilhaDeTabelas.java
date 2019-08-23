@@ -21,28 +21,28 @@ public class PilhaDeTabelas {
 		return pilha.peek();
 	}
 
-	public boolean existeSimbolo(String nome) {
+	public boolean existeSimbolo(String simbolo) {
 		for (TabelaDeSimbolos ts : pilha) {
-			if (ts.existeSimbolo(nome)) {
+			if (ts.existeSimbolo(simbolo)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public String getTipo(String nome) {
+	public String getTipoDeDado(String simbolo) {
 		for (TabelaDeSimbolos tabela : pilha) {
-			if (tabela.existeSimbolo(nome)) {
-				return tabela.getTipo(nome);
+			if (tabela.existeSimbolo(simbolo)) {
+				return tabela.getTipoDeDado(simbolo);
 			}
 		}
 		return null;
 	}
 
-	public String getSimbolo(String nome) {
+	public String getTipoDoToken(String simbolo) {
 		for (TabelaDeSimbolos tabela : pilha) {
-			if (tabela.existeSimbolo(nome)) {
-				return tabela.getSimbolo(nome);
+			if (tabela.existeSimbolo(simbolo)) {
+				return tabela.getTipoDoToken(simbolo);
 			}
 		}
 		return null;

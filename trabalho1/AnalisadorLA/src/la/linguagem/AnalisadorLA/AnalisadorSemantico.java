@@ -75,7 +75,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
-		String tipoDoIdentificador = pilhaDeTabelas.getTipo(ctx.identificador().getText());
+		String tipoDoIdentificador = pilhaDeTabelas.getTipoDeDado(ctx.identificador().getText());
 		String tipoDaExpressao = verificaTipo(ctx.expressao());
 
 		boolean incompativel = false;
@@ -173,7 +173,8 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	@Override
 	public Object visitCmdRetorne(CmdRetorneContext ctx) {
 		String escopo = pilhaDeTabelas.topo().getEscopo();
-		if (!pilhaDeTabelas.getSimbolo(escopo).equals("funcao")) {
+		System.out.println(escopo);
+		if (!pilhaDeTabelas.getTipoDoToken(escopo).equals("funcao")) {
 			saida.println("Linha " + ctx.getStart().getLine() + ": comando retorne nao permitido nesse escopo");
 		}
 		return null;
@@ -261,13 +262,13 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	private String verificaTipo(Parcela_unariaContext ctx) {
 		if (ctx.identificador() != null) {
-			String tipoIdentificador = pilhaDeTabelas.getTipo(ctx.identificador().getText());
+			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(ctx.identificador().getText());
 			if (ctx.getStart().getText().equals("^")) {
 				return "^" + tipoIdentificador;
 			}
 			return tipoIdentificador;
 		} else if (ctx.IDENT() != null) {
-			return pilhaDeTabelas.getTipo(ctx.IDENT().getText());
+			return pilhaDeTabelas.getTipoDeDado(ctx.IDENT().getText());
 		} else if (ctx.NUM_INT() != null) {
 			return "inteiro";
 		} else if (ctx.NUM_REAL() != null) {

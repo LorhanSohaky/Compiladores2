@@ -1,28 +1,28 @@
 package la.linguagem.AnalisadorLA;
 
 public class EntradaTabelaDeSimbolos {
-	private String nome, tipo, simbolo;
+	private String simbolo, tipoDeDado, tipoDoToken;
 
-	public EntradaTabelaDeSimbolos(String nome, String tipo, String simbolo) {
-		this.nome = nome;
-		this.tipo = tipo;
+	public EntradaTabelaDeSimbolos(String simbolo, String tipoDeDado, String tipoDoToken) {
 		this.simbolo = simbolo;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public String getTipo() {
-		return tipo;
+		this.tipoDeDado = tipoDeDado;
+		this.tipoDoToken = tipoDoToken;
 	}
 
 	public String getSimbolo() {
-		return simbolo;
+		return this.simbolo;
+	}
+
+	public String getTipoDeDado() {
+		return this.tipoDeDado;
+	}
+
+	public String getTipoDoToken() {
+		return this.tipoDoToken;
 	}
 
 	@Override
 	public String toString() {
-		return nome + "(" + tipo + ")";
+		return this.simbolo + "(" + this.tipoDeDado + ")";
 	}
 }

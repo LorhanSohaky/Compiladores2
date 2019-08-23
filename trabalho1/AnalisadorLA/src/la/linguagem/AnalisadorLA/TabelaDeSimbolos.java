@@ -12,29 +12,29 @@ public class TabelaDeSimbolos {
 		this.escopo = escopo;
 	}
 
-	public void adicionarSimbolo(String nome, String tipo, String simbolo) {
-		simbolos.add(new EntradaTabelaDeSimbolos(nome, tipo, simbolo));
+	public void adicionarSimbolo(String simbolo, String tipoDeDado, String tipoDoToken) {
+		simbolos.add(new EntradaTabelaDeSimbolos(simbolo, tipoDeDado, tipoDoToken));
 	}
 
-	public void adicionarSimbolos(List<String> nomes, String tipo, String simbolo) {
-		for (String s : nomes) {
-			simbolos.add(new EntradaTabelaDeSimbolos(s, tipo, simbolo));
+	public void adicionarSimbolos(List<String> simbolos, String tipoDeDado, String tipoDoToken) {
+		for (String simbolo : simbolos) {
+			this.simbolos.add(new EntradaTabelaDeSimbolos(simbolo, tipoDeDado, tipoDoToken));
 		}
 	}
 
-	public boolean existeSimbolo(String nome) {
+	public boolean existeSimbolo(String simbolo) {
 		for (EntradaTabelaDeSimbolos etds : simbolos) {
-			if (etds.getNome().equals(nome)) {
+			if (etds.getSimbolo().equals(simbolo)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public String getTipo(String nome) {
+	public String getTipoDeDado(String simbolo) {
 		for (EntradaTabelaDeSimbolos etds : simbolos) {
-			if (etds.getNome().equals(nome)) {
-				return etds.getTipo();
+			if (etds.getSimbolo().equals(simbolo)) {
+				return etds.getTipoDeDado();
 			}
 		}
 		return "false";
@@ -44,10 +44,10 @@ public class TabelaDeSimbolos {
 		return this.escopo;
 	}
 
-	public String getSimbolo(String nome) {
+	public String getTipoDoToken(String simbolo) {
 		for (EntradaTabelaDeSimbolos etds : simbolos) {
-			if (etds.getNome().equals(nome)) {
-				return etds.getSimbolo();
+			if (etds.getSimbolo().equals(simbolo)) {
+				return etds.getTipoDoToken();
 			}
 		}
 		return "false";
