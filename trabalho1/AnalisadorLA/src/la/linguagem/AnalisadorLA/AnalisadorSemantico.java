@@ -5,6 +5,7 @@ import la.linguagem.ANTLR.laParser;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
 import la.linguagem.ANTLR.laParser.CmdRetorneContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
+import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
 import la.linguagem.ANTLR.laParser.Declaracao_global_funcaoContext;
 import la.linguagem.ANTLR.laParser.Declaracao_global_procedimentoContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
@@ -169,6 +170,21 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 		return super.visitChildren(ctx);
 	}
+
+	@Override
+	public Object visitDeclaracaoLocalConstante(DeclaracaoLocalConstanteContext ctx) {
+		String constante = ctx.IDENT().getText();
+		String tipo = ctx.tipo_basico().getText();
+		if (pilhaDeTabelas.existeSimbolo(constante)) {
+			// TODO exibir erro adequado
+		} else {
+			pilhaDeTabelas.topo().adicionarSimbolo(constante, tipo, "constante");
+		}
+
+		return super.visitChildren(ctx);
+	}
+
+
 
 	@Override
 	public Object visitCmdRetorne(CmdRetorneContext ctx) {
