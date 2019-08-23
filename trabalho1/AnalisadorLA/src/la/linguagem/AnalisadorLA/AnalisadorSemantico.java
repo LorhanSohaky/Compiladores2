@@ -22,12 +22,17 @@ import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
+import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class AnalisadorSemantico extends laBaseVisitor {
 
 	SaidaParser saida = SaidaParser.getInstance();
-
 	PilhaDeTabelas pilhaDeTabelas = new PilhaDeTabelas();
+	HashMap<String, List<EntradaTabelaDeSimbolos>> tabelaDeParametros = new HashMap<String, List<EntradaTabelaDeSimbolos>>();
+	HashMap<String, List<EntradaTabelaDeSimbolos>> tabelaDeRegistros = new HashMap<String, List<EntradaTabelaDeSimbolos>>();
 
 	@Override
 	public Void visitPrograma(laParser.ProgramaContext ctx) {
@@ -131,12 +136,22 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			// TODO ver saída de erro ideal
 		} else {
 			pilhaDeTabelas.topo().adicionarSimbolo(nomeFuncao, tipoRetorno, "funcao");
-
 			pilhaDeTabelas.empilhar(new TabelaDeSimbolos(nomeFuncao));
+			List<EntradaTabelaDeSimbolos> argumentos = new ArrayList<EntradaTabelaDeSimbolos>();
+			tabelaDeParametros.put(nomeFuncao,argumentos);
 			for (ParametroContext parametro : ctx.parametros().parametro()) {
-				visitParametro(parametro);
+				visitParametro(parametro,argumentos);
 			}
 		}
+		return super.visitChildren(ctx);
+	}
+
+	public Object visitParametro(ParametroContext ctx,List<EntradaTabelaDeSimbolos> listaDeParametros) {
+		String tipo = ctx.tipo_estendido().getText();
+		for (IdentificadorContext identificador : ctx.identificador()) {
+			listaDeParametros.add(new EntradaTabelaDeSimbolos(identificador.getText(), tipo));
+		}
+		visitParametro(ctx);
 		return super.visitChildren(ctx);
 	}
 
@@ -193,6 +208,30 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		if (!pilhaDeTabelas.getTipoDoToken(escopo).equals("funcao")) {
 			saida.println("Linha " + ctx.getStart().getLine() + ": comando retorne nao permitido nesse escopo");
 		}
+		return null;
+	}
+
+	@Override
+	public Void visitParcela_unaria(Parcela_unariaContext ctx) {
+		if (ctx.IDENT() != null) {
+			String nomeFuncao = ctx.IDENT().getText();
+			List<EntradaTabelaDeSimbolos> parametros = tabelaDeParametros.get(nomeFuncao);
+
+			if (ctx.expressao().size() < parametros.size()) {
+				saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
+			} else {
+				for (int i = 0; i < ctx.expressao().size(); i++) {
+					if (!isTiposCompativeis(verificaTipo(ctx.expressao(i)), parametros.get(i).getTipoDeDado())) {
+						saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
+					}
+				}
+			}
+
+
+		}
+
+		visitChildren(ctx);
+
 		return null;
 	}
 

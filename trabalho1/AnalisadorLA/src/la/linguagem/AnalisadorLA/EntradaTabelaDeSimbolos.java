@@ -3,6 +3,12 @@ package la.linguagem.AnalisadorLA;
 public class EntradaTabelaDeSimbolos {
 	private String simbolo, tipoDeDado, tipoDoToken;
 
+	public EntradaTabelaDeSimbolos(String simbolo, String tipoDeDado) {
+		this.simbolo = simbolo;
+		this.tipoDeDado = tipoDeDado;
+		this.tipoDoToken = null;
+	}
+
 	public EntradaTabelaDeSimbolos(String simbolo, String tipoDeDado, String tipoDoToken) {
 		this.simbolo = simbolo;
 		this.tipoDeDado = tipoDeDado;
