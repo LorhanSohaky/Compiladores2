@@ -57,11 +57,12 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		}
 
 		for (IdentificadorContext variavel : ctx.identificadores) {
-			if (pilhaDeTabelas.existeSimbolo(variavel.getText())) {
-				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + variavel.getText()
+			String identificador = variavel.getText().contains("[") ? variavel.getText().substring(0,variavel.getText().indexOf("[")) : variavel.getText();
+			if (pilhaDeTabelas.existeSimbolo(identificador)) {
+				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + identificador
 						+ " ja declarado anteriormente");
 			} else {
-				pilhaDeTabelas.topo().adicionarSimbolo(variavel.getText(), tipoCompleto, "variavel");
+				pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
 			}
 		}
 
@@ -81,30 +82,34 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
-		String tipoDoIdentificador = pilhaDeTabelas.getTipoDeDado(ctx.identificador().getText());
+		String identificador = ctx.identificador().IDENT(0).getText();
+		String tipoDoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador);
 		String tipoDaExpressao = verificaTipo(ctx.expressao());
 
 		boolean incompativel = false;
 
-		if (tipoDoIdentificador.startsWith("^")) {
-			if (tipoDaExpressao.startsWith("&") && !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
-				incompativel = true;
-			} else if (ctx.getStart().getText().equals("^")
-					&& !isTiposCompativeis(tipoDaExpressao.substring(1), tipoDaExpressao)) {
-				incompativel = true;
+		if(tipoDoIdentificador != null){
+			if (tipoDoIdentificador.startsWith("^")) {
+				if (tipoDaExpressao.startsWith("&") && !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
+					incompativel = true;
+				} else if (ctx.getStart().getText().equals("^")
+						&& !isTiposCompativeis(tipoDaExpressao.substring(1), tipoDaExpressao)) {
+					incompativel = true;
+				}
+
+			} else {
+				if (!isTiposCompativeis(tipoDoIdentificador, tipoDaExpressao)) {
+					incompativel = true;
+				}
 			}
 
-		} else {
-			if (!isTiposCompativeis(tipoDoIdentificador, tipoDaExpressao)) {
-				incompativel = true;
+			if (incompativel) {
+				String destino = ctx.getStart().getText().equals("^") ? "^" + ctx.identificador().getText()
+						: ctx.identificador().getText();
+				saida.println("Linha " + ctx.identificador().getStart().getLine() + ": atribuicao nao compativel para "
+						+ destino);
 			}
-		}
 
-		if (incompativel) {
-			String destino = ctx.getStart().getText().equals("^") ? "^" + ctx.identificador().getText()
-					: ctx.identificador().getText();
-			saida.println("Linha " + ctx.identificador().getStart().getLine() + ": atribuicao nao compativel para "
-					+ destino);
 		}
 
 		return super.visitChildren(ctx);
@@ -317,7 +322,8 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	private String verificaTipo(Parcela_unariaContext ctx) {
 		if (ctx.identificador() != null) {
-			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(ctx.identificador().getText());
+			String identificador = ctx.identificador().getText().contains("[") ? ctx.identificador().getText().substring(0,ctx.identificador().getText().indexOf("[")) : ctx.identificador().getText();
+			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador);
 			if (ctx.getStart().getText().equals("^")) {
 				return "^" + tipoIdentificador;
 			}
