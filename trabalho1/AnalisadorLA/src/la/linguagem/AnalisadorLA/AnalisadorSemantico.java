@@ -209,7 +209,6 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	@Override
 	public Object visitCmdRetorne(CmdRetorneContext ctx) {
 		String escopo = pilhaDeTabelas.topo().getEscopo();
-		System.out.println(escopo);
 		if (!pilhaDeTabelas.getTipoDoToken(escopo).equals("funcao")) {
 			saida.println("Linha " + ctx.getStart().getLine() + ": comando retorne nao permitido nesse escopo");
 		}
