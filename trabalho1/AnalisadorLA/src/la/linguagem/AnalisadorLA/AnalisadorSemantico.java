@@ -221,7 +221,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 				saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
 			} else {
 				for (int i = 0; i < ctx.expressao().size(); i++) {
-					if (!isTiposCompativeis(verificaTipo(ctx.expressao(i)), parametros.get(i).getTipoDeDado())) {
+					if (!verificaTipo(ctx.expressao(i)).equals(parametros.get(i).getTipoDeDado())) {
 						saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
 					}
 				}
