@@ -23,6 +23,8 @@ import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
+import la.linguagem.ANTLR.laParser.VariavelContext;
+import la.linguagem.ANTLR.laParser.RegistroContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	PilhaDeTabelas pilhaDeTabelas = new PilhaDeTabelas();
 	HashMap<String, List<EntradaTabelaDeSimbolos>> tabelaDeParametros = new HashMap<String, List<EntradaTabelaDeSimbolos>>();
 	HashMap<String, List<EntradaTabelaDeSimbolos>> tabelaDeRegistros = new HashMap<String, List<EntradaTabelaDeSimbolos>>();
+	ArrayList<String> tabelaDeTipos = new ArrayList<String>();
 
 	@Override
 	public Void visitPrograma(laParser.ProgramaContext ctx) {
@@ -57,12 +60,21 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		}
 
 		for (IdentificadorContext variavel : ctx.identificadores) {
-			String identificador = variavel.getText().contains("[") ? variavel.getText().substring(0,variavel.getText().indexOf("[")) : variavel.getText();
+			String identificador = variavel.getText().contains("[")
+					? variavel.getText().substring(0, variavel.getText().indexOf("["))
+					: variavel.getText();
 			if (pilhaDeTabelas.existeSimbolo(identificador)) {
 				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + identificador
 						+ " ja declarado anteriormente");
 			} else {
-				pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
+				if (pilhaDeTabelas.topo().getEscopo().startsWith("registro")) {
+                      String id_reg = pilhaDeTabelas.topo().getEscopo();
+                      EntradaTabelaDeSimbolos atributo = new EntradaTabelaDeSimbolos(identificador, tipoCompleto, "campo");
+                      // adicionando variável à lista de atributos do registro
+                      id_reg = id_reg.substring(id_reg.indexOf("[") + 1, id_reg.indexOf("]"));
+                      tabelaDeRegistros.get(id_reg).add(atributo);
+                  }
+                  pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
 			}
 		}
 
@@ -81,6 +93,38 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	}
 
 	@Override
+  public String visitRegistro (RegistroContext ctx) {
+      String id_reg;
+
+      if (ctx.getParent().getParent() instanceof VariavelContext) {
+          for (int i = 0; i < ((VariavelContext) ctx.getParent().getParent()).identificador().size(); i++) {
+
+              id_reg = ((VariavelContext) ctx.getParent().getParent()).identificador().get(i).getText();
+              pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
+              for (VariavelContext var : ctx.variavel()) {
+                  visitVariavel(var);
+              }
+              pilhaDeTabelas.desempilhar();
+              if (tabelaDeRegistros.get(id_reg) != null) {
+                  for (EntradaTabelaDeSimbolos atrib : tabelaDeRegistros.get(id_reg)) {
+                      String id_atrib = id_reg + "." + atrib.getSimbolo();
+                      pilhaDeTabelas.topo().adicionarSimbolo(id_atrib, atrib.getTipoDeDado(), atrib.getTipoDoToken());
+                  }
+             }
+          }
+      } else if (ctx.getParent().getParent() instanceof DeclaracaoLocalTipoContext){
+          id_reg = ((DeclaracaoLocalTipoContext) ctx.getParent().getParent()).IDENT().getText();
+          pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
+          for (VariavelContext var : ctx.variavel()) {
+              visitVariavel(var);
+          }
+          pilhaDeTabelas.desempilhar();
+      }
+	  
+      return "registro";
+  }
+
+	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
 		String identificador = ctx.identificador().IDENT(0).getText();
 		String tipoDoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador);
@@ -88,9 +132,10 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 		boolean incompativel = false;
 
-		if(tipoDoIdentificador != null){
+		if (tipoDoIdentificador != null) {
 			if (tipoDoIdentificador.startsWith("^")) {
-				if (tipoDaExpressao.startsWith("&") && !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
+				if (tipoDaExpressao.startsWith("&")
+						&& !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
 					incompativel = true;
 				} else if (ctx.getStart().getText().equals("^")
 						&& !isTiposCompativeis(tipoDaExpressao.substring(1), tipoDaExpressao)) {
@@ -147,18 +192,18 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			pilhaDeTabelas.topo().adicionarSimbolo(nomeFuncao, tipoRetorno, "funcao");
 			pilhaDeTabelas.empilhar(new TabelaDeSimbolos(nomeFuncao));
 			List<EntradaTabelaDeSimbolos> argumentos = new ArrayList<EntradaTabelaDeSimbolos>();
-			tabelaDeParametros.put(nomeFuncao,argumentos);
+			tabelaDeParametros.put(nomeFuncao, argumentos);
 			for (ParametroContext parametro : ctx.parametros().parametro()) {
-				visitParametro(parametro,argumentos);
+				visitParametro(parametro, argumentos);
 			}
 		}
-		
+
 		super.visitChildren(ctx);
 		pilhaDeTabelas.desempilhar();
 		return null;
 	}
 
-	public Object visitParametro(ParametroContext ctx,List<EntradaTabelaDeSimbolos> listaDeParametros) {
+	public Object visitParametro(ParametroContext ctx, List<EntradaTabelaDeSimbolos> listaDeParametros) {
 		String tipo = ctx.tipo_estendido().getText();
 		for (IdentificadorContext identificador : ctx.identificador()) {
 			listaDeParametros.add(new EntradaTabelaDeSimbolos(identificador.getText(), tipo));
@@ -190,9 +235,18 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	public Object visitDeclaracaoLocalTipo(DeclaracaoLocalTipoContext ctx) {
 		String novoTipo = ctx.IDENT().getText();
 		if (pilhaDeTabelas.existeSimbolo(novoTipo)) {
-			// TODO exibir erro adequado
+			saida.println("Linha " + ctx.start.getLine() + ": identificador " + novoTipo + " ja declarado anteriormente");
 		} else {
-			pilhaDeTabelas.topo().adicionarSimbolo(novoTipo, ctx.tipo().getText(), "tipo");
+			if (ctx.tipo().registro() != null) {
+				pilhaDeTabelas.topo().adicionarSimbolo(novoTipo, "registro", "registro");
+				tabelaDeRegistros.put(novoTipo, new ArrayList<>());
+			} else {
+				pilhaDeTabelas.topo().adicionarSimbolo(novoTipo, ctx.tipo().getText(), "tipo");
+			}
+			tabelaDeTipos.add(novoTipo);
+			if (!novoTipo.startsWith("^")) {
+				tabelaDeTipos.add("^" + ctx.IDENT().getText());
+			}
 		}
 
 		return super.visitChildren(ctx);
@@ -211,12 +265,10 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		return super.visitChildren(ctx);
 	}
 
-
-
 	@Override
 	public Object visitCmdRetorne(CmdRetorneContext ctx) {
 		String escopo = pilhaDeTabelas.topo().getEscopo();
-		if (pilhaDeTabelas.getTipoDoToken(escopo) == null ||!pilhaDeTabelas.getTipoDoToken(escopo).equals("funcao")) {
+		if (pilhaDeTabelas.getTipoDoToken(escopo) == null || !pilhaDeTabelas.getTipoDoToken(escopo).equals("funcao")) {
 			saida.println("Linha " + ctx.getStart().getLine() + ": comando retorne nao permitido nesse escopo");
 		}
 		return null;
@@ -229,15 +281,16 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			List<EntradaTabelaDeSimbolos> parametros = tabelaDeParametros.get(nomeFuncao);
 
 			if (ctx.expressao().size() < parametros.size()) {
-				saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
+				saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de "
+						+ nomeFuncao);
 			} else {
 				for (int i = 0; i < ctx.expressao().size(); i++) {
 					if (!verificaTipo(ctx.expressao(i)).equals(parametros.get(i).getTipoDeDado())) {
-						saida.println("Linha " + ctx.getStart().getLine() + ": incompatibilidade de parametros na chamada de " + nomeFuncao);
+						saida.println("Linha " + ctx.getStart().getLine()
+								+ ": incompatibilidade de parametros na chamada de " + nomeFuncao);
 					}
 				}
 			}
-
 
 		}
 
@@ -328,12 +381,30 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	private String verificaTipo(Parcela_unariaContext ctx) {
 		if (ctx.identificador() != null) {
-			String identificador = ctx.identificador().getText().contains("[") ? ctx.identificador().getText().substring(0,ctx.identificador().getText().indexOf("[")) : ctx.identificador().getText();
-			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador.contains(".")?identificador.substring(0,identificador.indexOf(".")):identificador);
+			String identificador = ctx.identificador().getText().contains("[")
+					? ctx.identificador().getText().substring(0, ctx.identificador().getText().indexOf("["))
+					: ctx.identificador().getText();
+			String tipoIdentificador = pilhaDeTabelas
+					.getTipoDeDado(identificador.contains(".") ? identificador.substring(0, identificador.indexOf("."))
+							: identificador);
 			if (ctx.getStart().getText().equals("^")) {
 				return "^" + tipoIdentificador;
-			}else if (identificador.contains(".")) { 
-				//TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de dado do atributo
+			} else if (identificador.contains(".")) {
+				if(tabelaDeRegistros.containsKey(tipoIdentificador)){
+					String item = identificador.substring(identificador.indexOf(".")+1,identificador.length());
+					List <EntradaTabelaDeSimbolos> atributos = tabelaDeRegistros.get(tipoIdentificador);
+					for (EntradaTabelaDeSimbolos atributo:atributos){
+						if(atributo.getSimbolo().equals(item)){
+							return atributo.getTipoDeDado();
+						}
+					}
+					return "null";
+				}else{
+					//TODO printar erro
+				}
+				
+				// TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de
+				// dado do atributo
 			}
 			return tipoIdentificador;
 		} else if (ctx.IDENT() != null) {
