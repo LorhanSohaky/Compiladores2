@@ -129,7 +129,11 @@ public class AnalisadorSemantico extends laBaseVisitor {
 			}
 		}
 
-		return super.visitChildren(ctx);
+		super.visitChildren(ctx);
+
+		pilhaDeTabelas.desempilhar();
+
+		return null;
 	}
 
 	@Override
@@ -148,7 +152,10 @@ public class AnalisadorSemantico extends laBaseVisitor {
 				visitParametro(parametro,argumentos);
 			}
 		}
-		return super.visitChildren(ctx);
+		
+		super.visitChildren(ctx);
+		pilhaDeTabelas.desempilhar();
+		return null;
 	}
 
 	public Object visitParametro(ParametroContext ctx,List<EntradaTabelaDeSimbolos> listaDeParametros) {
