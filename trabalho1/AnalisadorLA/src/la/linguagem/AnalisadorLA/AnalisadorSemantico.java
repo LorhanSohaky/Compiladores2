@@ -329,9 +329,11 @@ public class AnalisadorSemantico extends laBaseVisitor {
 	private String verificaTipo(Parcela_unariaContext ctx) {
 		if (ctx.identificador() != null) {
 			String identificador = ctx.identificador().getText().contains("[") ? ctx.identificador().getText().substring(0,ctx.identificador().getText().indexOf("[")) : ctx.identificador().getText();
-			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador);
+			String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador.contains(".")?identificador.substring(0,identificador.indexOf(".")):identificador);
 			if (ctx.getStart().getText().equals("^")) {
 				return "^" + tipoIdentificador;
+			}else if (identificador.contains(".")) { 
+				//TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de dado do atributo
 			}
 			return tipoIdentificador;
 		} else if (ctx.IDENT() != null) {
