@@ -25,6 +25,7 @@ import la.linguagem.ANTLR.laParser.VariavelContext;
 import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 import la.linguagem.ANTLR.laParser.RegistroContext;
+import la.linguagem.ANTLR.laParser.DeclaracaoLocalVariavelContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -84,11 +85,17 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	@Override
 	public Void visitIdentificador(IdentificadorContext ctx) {
-		if (!pilhaDeTabelas.existeSimbolo(ctx.identificador1.getText())) {
-			saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + ctx.identificador1.getText()
-					+ " nao declarado");
+		String identificador = ctx.getText().contains("[") ? ctx.identificador1.getText() : ctx.getText();
+		if (identificador.contains(".")) {
+			String tipoIdentificador = verificaTipo(ctx);
+			if(tipoIdentificador == "null" || tipoIdentificador == null){
+				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador + " nao declarado");
+			}
+		}else{
+			if (!pilhaDeTabelas.existeSimbolo(identificador)) {
+				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador + " nao declarado");
+			}
 		}
-
 		return null;
 	}
 
