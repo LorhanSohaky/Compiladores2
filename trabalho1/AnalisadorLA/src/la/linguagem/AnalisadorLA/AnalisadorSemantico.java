@@ -120,14 +120,14 @@ public class AnalisadorSemantico extends laBaseVisitor {
           }
           pilhaDeTabelas.desempilhar();
       }
-	  
+
       return "registro";
   }
 
 	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
-		String identificador = ctx.identificador().IDENT(0).getText();
-		String tipoDoIdentificador = pilhaDeTabelas.getTipoDeDado(identificador);
+		String identificador = ctx.identificador().getText();
+		String tipoDoIdentificador = verificaTipo(ctx.identificador());
 		String tipoDaExpressao = verificaTipo(ctx.expressao());
 
 		boolean incompativel = false;
@@ -379,34 +379,39 @@ public class AnalisadorSemantico extends laBaseVisitor {
 		return null;
 	}
 
+	private String verificaTipo(IdentificadorContext ctx){
+		String identificador = ctx.getText().contains("[")
+				? ctx.getText().substring(0, ctx.getText().indexOf("["))
+				: ctx.getText();
+		String tipoIdentificador = pilhaDeTabelas
+				.getTipoDeDado(identificador.contains(".") ? identificador.substring(0, identificador.indexOf("."))
+						: identificador);
+		if (ctx.getStart().getText().equals("^")) {
+			return "^" + tipoIdentificador;
+		} else if (identificador.contains(".")) {
+			if(tabelaDeRegistros.containsKey(tipoIdentificador)){
+				String item = identificador.substring(identificador.indexOf(".")+1,identificador.length());
+				List <EntradaTabelaDeSimbolos> atributos = tabelaDeRegistros.get(tipoIdentificador);
+				for (EntradaTabelaDeSimbolos atributo:atributos){
+					if(atributo.getSimbolo().equals(item)){
+						return atributo.getTipoDeDado();
+					}
+				}
+				return "null";
+			}else{
+				//TODO printar erro
+			}
+
+			// TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de
+			// dado do atributo
+		}
+		return tipoIdentificador;
+	}
+
 	private String verificaTipo(Parcela_unariaContext ctx) {
 		if (ctx.identificador() != null) {
-			String identificador = ctx.identificador().getText().contains("[")
-					? ctx.identificador().getText().substring(0, ctx.identificador().getText().indexOf("["))
-					: ctx.identificador().getText();
-			String tipoIdentificador = pilhaDeTabelas
-					.getTipoDeDado(identificador.contains(".") ? identificador.substring(0, identificador.indexOf("."))
-							: identificador);
-			if (ctx.getStart().getText().equals("^")) {
-				return "^" + tipoIdentificador;
-			} else if (identificador.contains(".")) {
-				if(tabelaDeRegistros.containsKey(tipoIdentificador)){
-					String item = identificador.substring(identificador.indexOf(".")+1,identificador.length());
-					List <EntradaTabelaDeSimbolos> atributos = tabelaDeRegistros.get(tipoIdentificador);
-					for (EntradaTabelaDeSimbolos atributo:atributos){
-						if(atributo.getSimbolo().equals(item)){
-							return atributo.getTipoDeDado();
-						}
-					}
-					return "null";
-				}else{
-					//TODO printar erro
-				}
-				
-				// TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de
-				// dado do atributo
-			}
-			return tipoIdentificador;
+			return verificaTipo(ctx.identificador());
+
 		} else if (ctx.IDENT() != null) {
 			return pilhaDeTabelas.getTipoDeDado(ctx.IDENT().getText());
 		} else if (ctx.NUM_INT() != null) {
