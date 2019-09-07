@@ -23,17 +23,6 @@ public class App {
 		inputFileName = args[0];
 		outputFileName = args[1];
 
-		if (inputFileName.contains("semantico")) {
-			AnalisarSemantica();
-		} else if (inputFileName.contains("sem_erros")) {
-			GerarCodigo();
-		} else if (inputFileName.contains("sintatico")) {
-			AnalisarGramatica();
-		}
-
-	}
-
-	private static void AnalisarGramatica() throws IOException {
 		SaidaParser out = SaidaParser.getInstance();
 
 		File initialFile = new File(inputFileName);
@@ -43,10 +32,19 @@ public class App {
 		laLexer lexer = new laLexer(cs);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		try {
+			/* Análise gramatical */
 			laParser parser = new laParser(tokens);
-
 			parser.addErrorListener(new T1ErrorListener(out));
-			parser.programa();
+			ProgramaContext arvore = parser.programa();
+
+			/* Análise semântica */
+			if (!out.isModificado()) {
+				AnalisadorSemantico analisador = new AnalisadorSemantico();
+				analisador.visitPrograma(arvore);
+			}
+			/* Geração de código */
+			if (!out.isModificado()) {
+			}
 
 		} catch (ParseCancellationException pce) {
 			if (pce.getMessage() != null) {
@@ -61,33 +59,6 @@ public class App {
 		fw = new FileWriter(outputFileName);
 		fw.write(out.toString());
 		fw.close();
-	}
 
-	private static void AnalisarSemantica() throws IOException {
-		SaidaParser out = SaidaParser.getInstance();
-
-		File initialFile = new File(inputFileName);
-		InputStream casoDeTesteEntrada = new FileInputStream(initialFile);
-		CharStream cs;
-		cs = CharStreams.fromStream(casoDeTesteEntrada);
-		laLexer lexer = new laLexer(cs);
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-		laParser parser = new laParser(tokens);
-		ProgramaContext arvore = parser.programa();
-
-		AnalisadorSemantico analisador = new AnalisadorSemantico();
-		analisador.visitPrograma(arvore);
-
-		out.println("Fim da compilacao");
-
-		FileWriter fw;
-
-		fw = new FileWriter(outputFileName);
-		fw.write(out.toString());
-		fw.close();
-	}
-
-	private static void GerarCodigo() {
 	}
 }
