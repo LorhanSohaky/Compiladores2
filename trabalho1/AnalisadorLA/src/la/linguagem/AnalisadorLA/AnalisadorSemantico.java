@@ -53,7 +53,7 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 		String tipo = tipoCompleto.startsWith("^") ? tipoCompleto.substring(1) : tipoCompleto;
 
 		if (!tipo.equals("literal") && !tipo.equals("inteiro") && !tipo.equals("real") && !tipo.equals("logico")
-				&& !pilhaDeTabelas.existeSimbolo(tipo)) {
+				&& !tipoCompleto.contains("registro") && !pilhaDeTabelas.existeSimbolo(tipo)) {
 			saida.println(
 					"Linha " + ctx.tipo().getStart().getLine() + ": tipo " + ctx.tipo().getText() + " nao declarado");
 		}
@@ -66,6 +66,15 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 				saida.println("Linha " + variavel.getStart().getLine() + ": identificador " + identificador
 						+ " ja declarado anteriormente");
 			} else {
+
+				// variável é um registro sem nome
+				if (tipoCompleto.contains("registro")) {
+
+					if (!tabelaDeRegistros.containsKey(identificador)) {
+						tabelaDeRegistros.put(identificador, new ArrayList<>());
+					}
+				}
+
 				if (pilhaDeTabelas.topo().getEscopo().startsWith("registro")) {
 					String id_reg = pilhaDeTabelas.topo().getEscopo();
 					EntradaTabelaDeSimbolos atributo = new EntradaTabelaDeSimbolos(identificador, tipoCompleto,
