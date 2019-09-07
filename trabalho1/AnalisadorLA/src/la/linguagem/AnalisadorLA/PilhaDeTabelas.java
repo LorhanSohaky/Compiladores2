@@ -6,11 +6,9 @@ import java.util.List;
 public class PilhaDeTabelas {
 
 	private LinkedList<TabelaDeSimbolos> pilha;
-	private SaidaParser saida;
 
 	public PilhaDeTabelas() {
 		pilha = new LinkedList<TabelaDeSimbolos>();
-		saida = SaidaParser.getInstance();
 	}
 
 	public void empilhar(TabelaDeSimbolos ts) {
@@ -49,8 +47,7 @@ public class PilhaDeTabelas {
 	}
 
 	public void desempilhar() {
-		TabelaDeSimbolos ret = pilha.pop();
-		// saida.println(ret.toString());
+		pilha.pop();
 	}
 
 	public List<TabelaDeSimbolos> getTodasTabelas() {

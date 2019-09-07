@@ -22,15 +22,12 @@ import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
-import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
-import la.linguagem.ANTLR.laParser.VariavelContext;
 import la.linguagem.ANTLR.laParser.RegistroContext;
-import la.linguagem.ANTLR.laParser.DeclaracaoLocalVariavelContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AnalisadorSemantico extends laBaseVisitor {
+public class AnalisadorSemantico extends laBaseVisitor<Object> {
 
 	SaidaParser saida = SaidaParser.getInstance();
 	PilhaDeTabelas pilhaDeTabelas = new PilhaDeTabelas();
@@ -133,7 +130,6 @@ public class AnalisadorSemantico extends laBaseVisitor {
 
 	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
-		String identificador = ctx.identificador().getText();
 		String tipoDoIdentificador = verificaTipo(ctx.identificador());
 		String tipoDaExpressao = verificaTipo(ctx.expressao());
 
