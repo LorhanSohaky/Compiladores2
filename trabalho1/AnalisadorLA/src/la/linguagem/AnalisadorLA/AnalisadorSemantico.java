@@ -1,11 +1,15 @@
 package la.linguagem.AnalisadorLA;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
 import la.linguagem.ANTLR.laParser.CmdRetorneContext;
-import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
+import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
 import la.linguagem.ANTLR.laParser.Declaracao_global_funcaoContext;
 import la.linguagem.ANTLR.laParser.Declaracao_global_procedimentoContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
@@ -19,13 +23,10 @@ import la.linguagem.ANTLR.laParser.ParcelaContext;
 import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
 import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
+import la.linguagem.ANTLR.laParser.RegistroContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
-import la.linguagem.ANTLR.laParser.RegistroContext;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
 
 public class AnalisadorSemantico extends laBaseVisitor<Object> {
 
@@ -66,13 +67,14 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 						+ " ja declarado anteriormente");
 			} else {
 				if (pilhaDeTabelas.topo().getEscopo().startsWith("registro")) {
-                      String id_reg = pilhaDeTabelas.topo().getEscopo();
-                      EntradaTabelaDeSimbolos atributo = new EntradaTabelaDeSimbolos(identificador, tipoCompleto, "campo");
-                      // adicionando variável à lista de atributos do registro
-                      id_reg = id_reg.substring(id_reg.indexOf("[") + 1, id_reg.indexOf("]"));
-                      tabelaDeRegistros.get(id_reg).add(atributo);
-                  }
-                  pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
+					String id_reg = pilhaDeTabelas.topo().getEscopo();
+					EntradaTabelaDeSimbolos atributo = new EntradaTabelaDeSimbolos(identificador, tipoCompleto,
+							"campo");
+					// adicionando variável à lista de atributos do registro
+					id_reg = id_reg.substring(id_reg.indexOf("[") + 1, id_reg.indexOf("]"));
+					tabelaDeRegistros.get(id_reg).add(atributo);
+				}
+				pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
 			}
 		}
 
@@ -85,48 +87,50 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 		String identificador = ctx.getText().contains("[") ? ctx.identificador1.getText() : ctx.getText();
 		if (identificador.contains(".")) {
 			String tipoIdentificador = verificaTipo(ctx);
-			if(tipoIdentificador == "null" || tipoIdentificador == null){
-				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador + " nao declarado");
+			if (tipoIdentificador == "null" || tipoIdentificador == null) {
+				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador
+						+ " nao declarado");
 			}
-		}else{
+		} else {
 			if (!pilhaDeTabelas.existeSimbolo(identificador)) {
-				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador + " nao declarado");
+				saida.println("Linha " + ctx.identificador1.getLine() + ": identificador " + identificador
+						+ " nao declarado");
 			}
 		}
 		return null;
 	}
 
 	@Override
-  public String visitRegistro (RegistroContext ctx) {
-      String id_reg;
+	public String visitRegistro(RegistroContext ctx) {
+		String id_reg;
 
-      if (ctx.getParent().getParent() instanceof VariavelContext) {
-          for (int i = 0; i < ((VariavelContext) ctx.getParent().getParent()).identificador().size(); i++) {
+		if (ctx.getParent().getParent() instanceof VariavelContext) {
+			for (int i = 0; i < ((VariavelContext) ctx.getParent().getParent()).identificador().size(); i++) {
 
-              id_reg = ((VariavelContext) ctx.getParent().getParent()).identificador().get(i).getText();
-              pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
-              for (VariavelContext var : ctx.variavel()) {
-                  visitVariavel(var);
-              }
-              pilhaDeTabelas.desempilhar();
-              if (tabelaDeRegistros.get(id_reg) != null) {
-                  for (EntradaTabelaDeSimbolos atrib : tabelaDeRegistros.get(id_reg)) {
-                      String id_atrib = id_reg + "." + atrib.getSimbolo();
-                      pilhaDeTabelas.topo().adicionarSimbolo(id_atrib, atrib.getTipoDeDado(), atrib.getTipoDoToken());
-                  }
-             }
-          }
-      } else if (ctx.getParent().getParent() instanceof DeclaracaoLocalTipoContext){
-          id_reg = ((DeclaracaoLocalTipoContext) ctx.getParent().getParent()).IDENT().getText();
-          pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
-          for (VariavelContext var : ctx.variavel()) {
-              visitVariavel(var);
-          }
-          pilhaDeTabelas.desempilhar();
-      }
+				id_reg = ((VariavelContext) ctx.getParent().getParent()).identificador().get(i).getText();
+				pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
+				for (VariavelContext var : ctx.variavel()) {
+					visitVariavel(var);
+				}
+				pilhaDeTabelas.desempilhar();
+				if (tabelaDeRegistros.get(id_reg) != null) {
+					for (EntradaTabelaDeSimbolos atrib : tabelaDeRegistros.get(id_reg)) {
+						String id_atrib = id_reg + "." + atrib.getSimbolo();
+						pilhaDeTabelas.topo().adicionarSimbolo(id_atrib, atrib.getTipoDeDado(), atrib.getTipoDoToken());
+					}
+				}
+			}
+		} else if (ctx.getParent().getParent() instanceof DeclaracaoLocalTipoContext) {
+			id_reg = ((DeclaracaoLocalTipoContext) ctx.getParent().getParent()).IDENT().getText();
+			pilhaDeTabelas.empilhar(new TabelaDeSimbolos("registro[" + id_reg + "]"));
+			for (VariavelContext var : ctx.variavel()) {
+				visitVariavel(var);
+			}
+			pilhaDeTabelas.desempilhar();
+		}
 
-      return "registro";
-  }
+		return "registro";
+	}
 
 	@Override
 	public Object visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
@@ -238,7 +242,8 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 	public Object visitDeclaracaoLocalTipo(DeclaracaoLocalTipoContext ctx) {
 		String novoTipo = ctx.IDENT().getText();
 		if (pilhaDeTabelas.existeSimbolo(novoTipo)) {
-			saida.println("Linha " + ctx.start.getLine() + ": identificador " + novoTipo + " ja declarado anteriormente");
+			saida.println(
+					"Linha " + ctx.start.getLine() + ": identificador " + novoTipo + " ja declarado anteriormente");
 		} else {
 			if (ctx.tipo().registro() != null) {
 				pilhaDeTabelas.topo().adicionarSimbolo(novoTipo, "registro", "registro");
@@ -382,27 +387,25 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 		return null;
 	}
 
-	private String verificaTipo(IdentificadorContext ctx){
-		String identificador = ctx.getText().contains("[")
-				? ctx.getText().substring(0, ctx.getText().indexOf("["))
+	private String verificaTipo(IdentificadorContext ctx) {
+		String identificador = ctx.getText().contains("[") ? ctx.getText().substring(0, ctx.getText().indexOf("["))
 				: ctx.getText();
-		String tipoIdentificador = pilhaDeTabelas
-				.getTipoDeDado(identificador.contains(".") ? identificador.substring(0, identificador.indexOf("."))
-						: identificador);
+		String tipoIdentificador = pilhaDeTabelas.getTipoDeDado(
+				identificador.contains(".") ? identificador.substring(0, identificador.indexOf(".")) : identificador);
 		if (ctx.getStart().getText().equals("^")) {
 			return "^" + tipoIdentificador;
 		} else if (identificador.contains(".")) {
-			if(tabelaDeRegistros.containsKey(tipoIdentificador)){
-				String item = identificador.substring(identificador.indexOf(".")+1,identificador.length());
-				List <EntradaTabelaDeSimbolos> atributos = tabelaDeRegistros.get(tipoIdentificador);
-				for (EntradaTabelaDeSimbolos atributo:atributos){
-					if(atributo.getSimbolo().equals(item)){
+			if (tabelaDeRegistros.containsKey(tipoIdentificador)) {
+				String item = identificador.substring(identificador.indexOf(".") + 1, identificador.length());
+				List<EntradaTabelaDeSimbolos> atributos = tabelaDeRegistros.get(tipoIdentificador);
+				for (EntradaTabelaDeSimbolos atributo : atributos) {
+					if (atributo.getSimbolo().equals(item)) {
 						return atributo.getTipoDeDado();
 					}
 				}
 				return "null";
-			}else{
-				//TODO printar erro
+			} else {
+				// TODO printar erro
 			}
 
 			// TODO ir na tabela de registro, buscar o registro e, então buscar o tipo de
