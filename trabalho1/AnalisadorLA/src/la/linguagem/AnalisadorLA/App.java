@@ -44,6 +44,10 @@ public class App {
 			}
 			/* Geração de código */
 			if (!out.isModificado()) {
+				GeradorDeCodigo gerador = new GeradorDeCodigo();
+				gerador.visitPrograma(arvore);
+			} else {
+				out.println("Fim da compilacao");
 			}
 
 		} catch (ParseCancellationException pce) {
@@ -51,8 +55,6 @@ public class App {
 				out.println(pce.getMessage());
 			}
 		}
-
-		out.println("Fim da compilacao");
 
 		FileWriter fw;
 
