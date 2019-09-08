@@ -146,8 +146,6 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 			String tipo = verificaTipo(expressao);
 
-			System.out.printf("%s %s %s", expressao.getText(), escopos.getTipoDeDado(expressao.getText()),
-					formatoLA2C(escopos.getTipoDeDado(expressao.getText())));
 			formato += formatoLA2C(escopos.getTipoDeDado(expressao.getText()));
 			argumentos += expressao.getText() + ",";
 		}
