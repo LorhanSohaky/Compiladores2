@@ -53,4 +53,8 @@ public class PilhaDeTabelas {
 	public List<TabelaDeSimbolos> getTodasTabelas() {
 		return pilha;
 	}
+
+	public int size() {
+		return pilha.size();
+	}
 }
