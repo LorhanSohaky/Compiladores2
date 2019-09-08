@@ -10,7 +10,7 @@ public class SaidaParser {
 	boolean modificado;
 	private static SaidaParser instance = null;
 
-	private SaidaParser() {
+	public SaidaParser() {
 		conteudo = new StringBuffer();
 		modificado = false;
 	}
@@ -28,6 +28,12 @@ public class SaidaParser {
 			modificado = true;
 		conteudo.append(texto);
 		conteudo.append("\n");
+	}
+
+	public void print(String texto) {
+		if (!modificado)
+			modificado = true;
+		conteudo.append(texto);
 	}
 
 	public boolean isModificado() {
