@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import la.linguagem.ANTLR.laBaseVisitor;
+import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
 import la.linguagem.ANTLR.laParser.CorpoContext;
@@ -170,6 +171,18 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		saida.print(argumentos);
 		saida.println(");");
 
+		return null;
+	}
+
+	@Override
+	public String visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
+		/* cmdAtribuicao: '^' ? identificador '<-' expressao */
+
+		indentacao();
+		saida.print(ctx.identificador().getText());
+		saida.print(" = ");
+		saida.print(ctx.expressao().getText());
+		saida.println(";");
 		return null;
 	}
 
