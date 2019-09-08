@@ -83,8 +83,12 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			}
 			escopos.topo().adicionarSimbolo(simbolo, tipoDeDado, tipoDoToken);
 
+			if (tipoDeDado.equals("literal")) {
+				simbolo += "[1024]";
+			}
+
 			indentacao();
-			saida.println(tipoC + " " + id.getText() + ";");
+			saida.println(tipoC + " " + simbolo + ";");
 
 		}
 		return null;
@@ -118,8 +122,13 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		String argumentos = "";
 
 		for (IdentificadorContext id : ctx.identificadores) {
-			formato += formatoLA2C(escopos.getTipoDeDado(id.getText()));
-			String simbolo = "&" + id.getText();
+			String tipoDeDado = escopos.getTipoDeDado(id.getText());
+			String simbolo = "";
+			formato += formatoLA2C(tipoDeDado);
+			if (!tipoDeDado.equals("literal")) {
+				simbolo += "&";
+			}
+			simbolo += id.getText();
 			argumentos += simbolo + ",";
 		}
 
@@ -168,7 +177,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			tipo = "double";
 			break;
 		case "literal":
-			tipo = "char*";
+			tipo = "char";
 			break;
 		case "logico":
 			tipo = "bool";
