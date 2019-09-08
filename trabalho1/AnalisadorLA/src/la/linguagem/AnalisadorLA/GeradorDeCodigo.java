@@ -153,10 +153,14 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		for (ExpressaoContext expressao : ctx.expressao()) {
 
-			String tipo = verificaTipo(expressao);
+			String texto = expressao.getText();
 
-			formato += formatoLA2C(escopos.getTipoDeDado(expressao.getText()));
-			argumentos += expressao.getText() + ",";
+			if (texto.contains("\"")) {
+				formato += texto.substring(texto.indexOf("\"") + 1, texto.lastIndexOf("\""));
+			} else {
+				formato += formatoLA2C(escopos.getTipoDeDado(texto));
+				argumentos += texto + ",";
+			}
 		}
 
 		argumentos = argumentos.substring(0, argumentos.length() - 1);// Removendo a última vírgula
