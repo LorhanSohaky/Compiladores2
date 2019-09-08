@@ -188,7 +188,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			tipo = "%d";
 			break;
 		case "real":
-			tipo = "%f";
+			tipo = "%lf";
 			break;
 		case "literal":
 			tipo = "%s";
