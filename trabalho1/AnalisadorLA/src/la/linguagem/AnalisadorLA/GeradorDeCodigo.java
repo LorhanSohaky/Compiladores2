@@ -6,8 +6,10 @@ import java.util.List;
 
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
+import la.linguagem.ANTLR.laParser.CmdContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
+import la.linguagem.ANTLR.laParser.CmdSeContext;
 import la.linguagem.ANTLR.laParser.CorpoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
@@ -24,6 +26,7 @@ import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.ProgramaContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
+import la.linguagem.ANTLR.laParser.Tipo_estendidoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 
 public class GeradorDeCodigo extends laBaseVisitor<String> {
@@ -165,9 +168,14 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			}
 		}
 
-		argumentos = argumentos.substring(0, argumentos.length() - 1);// Removendo a última vírgula
 		saida.print(formato);
-		saida.print("\",");
+		saida.print("\"");
+
+		if (argumentos.length() > 0) {
+			argumentos = argumentos.substring(0, argumentos.length() - 1);// Removendo a última vírgula
+			saida.print(",");
+		}
+
 		saida.print(argumentos);
 		saida.println(");");
 
@@ -184,6 +192,218 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		saida.print(ctx.expressao().getText());
 		saida.println(";");
 		return null;
+	}
+
+	@Override
+	public String visitCmdSe(CmdSeContext ctx) {
+		/* cmdSe: 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fim_se' */
+
+		indentacao();
+		saida.print("if ( ");
+		saida.print(visitExpressao(ctx.expressao()));
+		saida.println(" ) {");
+
+		escopos.empilhar(new TabelaDeSimbolos("se"));
+		for (CmdContext comando : ctx.cmd_se) {
+			visitCmd(comando);
+		}
+		escopos.desempilhar();
+
+		if (ctx.operador_se != null) {
+			indentacao();
+			saida.println("} else {");
+
+			escopos.empilhar(new TabelaDeSimbolos("senao"));
+			for (CmdContext comando : ctx.cmd_senao) {
+				visitCmd(comando);
+			}
+			escopos.desempilhar();
+
+			indentacao();
+			saida.println("}");
+		} else {
+			indentacao();
+			saida.println("}");
+		}
+
+		return null;
+	}
+
+	@Override
+	public String visitExpressao(ExpressaoContext ctx) {
+		/* expressao: termo_logico (operador_logico_nivel_1 termo_logico)* */
+
+		String retorno = "";
+		for (Termo_logicoContext termo : ctx.termo_logico()) {
+			retorno += visitTermo_logico(termo);
+			retorno += " || ";
+		}
+		retorno = retorno.substring(0, retorno.lastIndexOf(" || "));
+		return retorno;
+	}
+
+	@Override
+	public String visitTermo_logico(Termo_logicoContext ctx) {
+		/* termo_logico: fator_logico (operador_logico_nivel_2 fator_logico)* */
+		String retorno = "";
+		for (Fator_logicoContext fatorLogico : ctx.fator_logico()) {
+			retorno += visitFator_logico(fatorLogico);
+			retorno += " && ";
+		}
+		retorno = retorno.substring(0, retorno.lastIndexOf(" && "));
+		return retorno;
+	}
+
+	@Override
+	public String visitFator_logico(Fator_logicoContext ctx) {
+		/* fator_logico: 'nao' ? parcela_logica */
+
+		String retorno = "";
+		if (ctx.getText().startsWith("nao")) {
+			retorno += "!";
+		}
+
+		retorno += visitParcela_logica(ctx.parcela_logica());
+		return retorno;
+	}
+
+	@Override
+	public String visitParcela_logica(Parcela_logicaContext ctx) {
+		/* parcela_logica: ('verdadeiro' | 'falso')| expressao_relacional */
+
+		if (ctx.getText().equals("verdadeiro")) {
+			return "true";
+		} else if (ctx.getText().equals("falso")) {
+			return "false";
+		} else {
+			return visitExpressao_relacional(ctx.expressao_relacional());
+		}
+	}
+
+	@Override
+	public String visitExpressao_relacional(Expressao_relacionalContext ctx) {
+		/*
+		 * expressao_relacional: expressao_aritmetica (operador_relacional
+		 * expressao_aritmetica)?
+		 */
+
+		String retorno = "";
+		retorno += ctx.expressao_aritmetica(0).getText();
+		if (ctx.operador_relacional() != null) {
+			retorno += operadorRelacionalLA2C(ctx.operador_relacional().getText());
+			retorno += visitExpressao_aritmetica(ctx.expressao_aritmetica(1));
+		}
+		return retorno;
+	}
+
+	@Override
+	public String visitExpressao_aritmetica(Expressao_aritmeticaContext ctx) {
+		/* expressao_aritmetica: termo (operador_nivel_1 termo)* */
+
+		String retorno = visitTermo(ctx.termo(0));
+		for (int i = 1; i < ctx.termo().size(); i++) {
+			retorno += ctx.operador_nivel_1(i - 1);
+			retorno += visitTermo(ctx.termo(i));
+		}
+		return retorno;
+	}
+
+	@Override
+	public String visitTermo(TermoContext ctx) {
+		/* termo: fator (operador_nivel_2 fator)* */
+
+		String retorno = visitFator(ctx.fator(0));
+		for (int i = 1; i < ctx.fator().size(); i++) {
+			retorno += ctx.operador_nivel_2(i - 1);
+			retorno += visitFator(ctx.fator(i));
+		}
+		return retorno;
+	}
+
+	@Override
+	public String visitFator(FatorContext ctx) {
+		/* fator: parcela (operador_nivel_3 parcela)* */
+
+		String retorno = visitParcela(ctx.parcela(0));
+		for (int i = 1; i < ctx.parcela().size(); i++) {
+			retorno += ctx.operador_nivel_3(i - 1);
+			retorno += visitParcela(ctx.parcela(i));
+		}
+		return retorno;
+	}
+
+	@Override
+	public String visitParcela(ParcelaContext ctx) {
+		/* parcela: operador_unario ? parcela_unaria | parcela_nao_unaria */
+
+		String retorno = "";
+
+		if (ctx.parcela_unaria() != null) {
+			if (ctx.operador_unario() != null) {
+				retorno += ctx.operador_unario().getText();
+			}
+			retorno += visitParcela_unaria(ctx.parcela_unaria());
+		} else {
+			retorno += visitParcela_nao_unaria(ctx.parcela_nao_unaria());
+		}
+
+		return retorno;
+	}
+
+	@Override
+	public String visitParcela_unaria(Parcela_unariaContext ctx) {
+		/*
+		 * parcela_unaria: '^' ? identificador | IDENT '(' expressao (',' expressao)*
+		 * ')' | NUM_INT | NUM_REAL | '(' expressao ')'
+		 */
+
+		String retorno = "";
+
+		if (ctx.getText().startsWith("^")) {
+			retorno += "*";
+		}
+
+		if (ctx.identificador() != null) {
+			retorno += visitIdentificador(ctx.identificador());
+		} else if (ctx.IDENT() != null) {
+			retorno += ctx.IDENT().getText();
+			for (ExpressaoContext expressao : ctx.expressao()) {
+				retorno += visitExpressao(expressao);
+				retorno += ",";
+			}
+			if (ctx.expressao().size() > 0) {
+				retorno = retorno.substring(0, retorno.lastIndexOf(","));
+			}
+		} else if (ctx.getText().startsWith("(")) {
+			retorno += "(" + visitExpressao(ctx.expressao(0)) + ")";
+		} else {
+			retorno += ctx.NUM_INT() != null ? ctx.NUM_INT().getText() : ctx.NUM_REAL().getText();
+		}
+
+		return retorno;
+	}
+
+	@Override
+	public String visitParcela_nao_unaria(Parcela_nao_unariaContext ctx) {
+		/* parcela_nao_unaria: '&' identificador | CADEIA */
+		if (ctx.identificador() != null) {
+			return "&" + visitIdentificador(ctx.identificador());
+		} else {
+			return ctx.CADEIA().getText();
+		}
+	}
+
+	@Override
+	public String visitIdentificador(IdentificadorContext ctx) {
+		/* identificador: identificador1=IDENT ('.' IDENT)* dimensao */
+		return ctx.getText();
+	}
+
+	@Override
+	public String visitTipo_estendido(Tipo_estendidoContext ctx) {
+		/* tipo_estendido: '^' ? tipo_basico_identificador */
+		return ((ctx.getText().startsWith("^")) ? "*" : "")
+				+ visitTipo_basico_identificador(ctx.tipo_basico_identificador());
 	}
 
 	private String tipoLA2C(String tipo) {
@@ -227,6 +447,20 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		}
 		return tipo;
 
+	}
+
+	private String operadorRelacionalLA2C(String operador) {
+		switch (operador) {
+		case "<>":
+			operador = "!=";
+			break;
+		case "=":
+			operador = "==";
+			break;
+		default:
+			break;
+		}
+		return operador;
 	}
 
 	private void indentacao() {

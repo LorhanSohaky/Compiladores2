@@ -34,7 +34,7 @@ cmd: cmdLeia | cmdEscreva | cmdSe | cmdCaso | cmdPara | cmdEnquanto
    | cmdFaca | cmdAtribuicao | cmdChamada | cmdRetorne;
 cmdLeia: 'leia' '(' '^' ? identificadores+=identificador (',' '^' ? identificadores+=identificador)* ')';
 cmdEscreva: 'escreva' '(' expressao (',' expressao)* ')';
-cmdSe: 'se' expressao 'entao' cmd* ('senao' cmd*)? 'fim_se';
+cmdSe: 'se' expressao 'entao' cmd_se+=cmd* (operador_se='senao' cmd_senao+=cmd*)? 'fim_se';
 cmdCaso: 'caso' expressao_aritmetica 'seja' selecao ('senao' cmd*)? 'fim_caso';
 cmdPara: 'para' IDENT '<-' expressao_aritmetica 'ate' expressao_aritmetica 'faca' cmd* 'fim_para';
 cmdEnquanto: 'enquanto' expressao 'faca' cmd* 'fim_enquanto';
