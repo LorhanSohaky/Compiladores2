@@ -158,7 +158,8 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			if (texto.contains("\"")) {
 				formato += texto.substring(texto.indexOf("\"") + 1, texto.lastIndexOf("\""));
 			} else {
-				formato += formatoLA2C(escopos.getTipoDeDado(texto));
+				String tipo = verificaTipo(expressao);
+				formato += formatoLA2C(tipo);
 				argumentos += texto + ",";
 			}
 		}
