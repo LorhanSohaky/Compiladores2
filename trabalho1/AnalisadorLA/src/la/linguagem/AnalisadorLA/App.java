@@ -23,6 +23,8 @@ public class App {
 		inputFileName = args[0];
 		outputFileName = args[1];
 
+		boolean geracaoDecodigo = false;
+
 		SaidaParser out = SaidaParser.getInstance();
 
 		File initialFile = new File(inputFileName);
@@ -41,19 +43,24 @@ public class App {
 			if (!out.isModificado()) {
 				AnalisadorSemantico analisador = new AnalisadorSemantico();
 				analisador.visitPrograma(arvore);
+
 			}
+
 			/* Geração de código */
 			if (!out.isModificado()) {
+				geracaoDecodigo = true;
 				GeradorDeCodigo gerador = new GeradorDeCodigo();
 				gerador.visitPrograma(arvore);
-			} else {
-				out.println("Fim da compilacao");
 			}
 
 		} catch (ParseCancellationException pce) {
 			if (pce.getMessage() != null) {
 				out.println(pce.getMessage());
 			}
+		}
+
+		if (!geracaoDecodigo) {
+			out.println("Fim da compilacao");
 		}
 
 		FileWriter fw;
