@@ -31,10 +31,8 @@ import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
 import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.ProgramaContext;
-import la.linguagem.ANTLR.laParser.RegistroContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
-import la.linguagem.ANTLR.laParser.TipoContext;
 import la.linguagem.ANTLR.laParser.Tipo_estendidoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 
@@ -108,14 +106,29 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	public String visitDeclaracaoLocalTipo(DeclaracaoLocalTipoContext ctx) {
 		/* 'tipo' IDENT ':' tipo # declaracao_local_tipo */
 
+		indentacao();
+		saida.print("typedef ");
+
+		String tipo = ctx.IDENT().getText();
+		tabelaDeTipos.add(tipo);
+
+		if (ctx.tipo().registro() != null) {
+			if (!escopos.topo().existeSimbolo(ctx.tipo().getText())) {
+				saida.println("struct {");
+				tabelaDeRegistros.put(tipo, new ArrayList<EntradaTabelaDeSimbolos>());
+
+				escopos.empilhar(new TabelaDeSimbolos("registro" + tipo));
+				visitChildren(ctx.tipo().registro());
+				escopos.desempilhar();
+
+				indentacao();
+				saida.println("} " + tipo + ";");
+				escopos.topo().adicionarSimbolo(tipo, "registro", "tipo");
+			}
+		} else {
+			super.visitDeclaracaoLocalTipo(ctx);
+		}
 		return null;
-	}
-
-	@Override
-	public String visitTipo(TipoContext ctx) {
-		/* tipo: registro | tipo_estendido */
-
-		return super.visitTipo(ctx);
 	}
 
 	@Override
@@ -177,13 +190,6 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		indentacao();
 		saida.println("return 0;");
 		saida.println("}");
-		return null;
-	}
-
-	@Override
-	public String visitRegistro(RegistroContext ctx) {
-		/* registro: 'registro' variavel* 'fim_registro' */
-
 		return null;
 	}
 
