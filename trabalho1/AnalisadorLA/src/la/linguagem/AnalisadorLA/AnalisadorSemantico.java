@@ -154,7 +154,7 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 						&& !tipoDaExpressao.substring(1).equals(tipoDaExpressao.substring(1))) {
 					incompativel = true;
 				} else if (ctx.getStart().getText().equals("^")
-						&& !isTiposCompativeis(tipoDaExpressao.substring(1), tipoDaExpressao)) {
+						&& !isTiposCompativeis(tipoDaExpressao, tipoDoIdentificador.substring(1))) {
 					incompativel = true;
 				}
 
@@ -444,7 +444,7 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 		if (ctx.CADEIA() != null) {
 			return "literal";
 		} else if (ctx.identificador() != null) {
-			return "&identificador";
+			return "&" + verificaTipo(ctx.identificador());
 		}
 
 		return null;
