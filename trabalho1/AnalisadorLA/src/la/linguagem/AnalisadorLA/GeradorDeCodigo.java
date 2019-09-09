@@ -6,6 +6,7 @@ import java.util.List;
 
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
+import la.linguagem.ANTLR.laParser.CmdCasoContext;
 import la.linguagem.ANTLR.laParser.CmdContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
@@ -19,6 +20,8 @@ import la.linguagem.ANTLR.laParser.Expressao_relacionalContext;
 import la.linguagem.ANTLR.laParser.FatorContext;
 import la.linguagem.ANTLR.laParser.Fator_logicoContext;
 import la.linguagem.ANTLR.laParser.IdentificadorContext;
+import la.linguagem.ANTLR.laParser.Item_selecaoContext;
+import la.linguagem.ANTLR.laParser.Numero_intervaloContext;
 import la.linguagem.ANTLR.laParser.ParcelaContext;
 import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
@@ -225,6 +228,59 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			indentacao();
 			saida.println("}");
 		}
+
+		return null;
+	}
+
+	@Override
+	public String visitCmdCaso(CmdCasoContext ctx) {
+		/*
+		 * cmdCaso: 'caso' expressao_aritmetica 'seja' selecao ('senao' cmd*)?
+		 * 'fim_caso'
+		 */
+
+		indentacao();
+		saida.print("switch( ");
+		saida.print(visitExpressao_aritmetica(ctx.expressao_aritmetica()));
+		saida.println(" ) {");
+
+		escopos.empilhar(new TabelaDeSimbolos("caso"));
+
+		for (Item_selecaoContext item : ctx.selecao().item_selecao()) {
+			for (Numero_intervaloContext numero : item.constantes().numero_intervalo()) {
+				int numero_inicial = Integer.parseInt(numero.NUM_INT(0).getText());
+
+				if (numero.operador_unario(0) != null) {
+					numero_inicial = -numero_inicial;
+				}
+
+				int numero_final = numero_inicial;
+				if (numero.NUM_INT().size() > 1) {
+					numero_final = Integer.parseInt(numero.NUM_INT(1).getText());
+
+					if (numero.operador_unario(1) != null) {
+						numero_final = -numero_final;
+					}
+				}
+
+				for (; numero_inicial <= numero_final; numero_inicial++) {
+					indentacao();
+					saida.println("case " + numero_inicial + ":");
+				}
+
+				escopos.empilhar(new TabelaDeSimbolos("selecao"));
+				for (CmdContext comando : item.cmd()) {
+					visitCmd(comando);
+				}
+				indentacao();
+				saida.println("break;");
+				escopos.desempilhar();
+			}
+		}
+
+		escopos.desempilhar();
+		indentacao();
+		saida.println("}");
 
 		return null;
 	}
