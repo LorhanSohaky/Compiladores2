@@ -8,6 +8,7 @@ import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
 import la.linguagem.ANTLR.laParser.CmdCasoContext;
 import la.linguagem.ANTLR.laParser.CmdContext;
+import la.linguagem.ANTLR.laParser.CmdEnquantoContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
 import la.linguagem.ANTLR.laParser.CmdParaContext;
@@ -313,9 +314,28 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			visitCmd(comando);
 		}
 		escopos.desempilhar();
+
 		indentacao();
 		saida.println("}");
 
+		return null;
+	}
+
+	@Override
+	public String visitCmdEnquanto(CmdEnquantoContext ctx) {
+		/* cmdEnquanto: 'enquanto' expressao 'faca' cmd* 'fim_enquanto' */
+
+		indentacao();
+		saida.println("while ( " + visitExpressao(ctx.expressao()) + " ) {");
+
+		escopos.empilhar(new TabelaDeSimbolos("enquanto"));
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
+		escopos.desempilhar();
+
+		indentacao();
+		saida.println("}");
 		return null;
 	}
 
