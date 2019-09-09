@@ -85,7 +85,12 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		 */
 
 		String tipoDeDado = ctx.tipo().getText();
-		String tipoC = tipoLA2C(tipoDeDado);
+		String tipoC;
+		if (tipoDeDado.startsWith("^")) {
+			tipoC = tipoLA2C(tipoDeDado.substring(1));
+		} else {
+			tipoC = tipoLA2C(tipoDeDado);
+		}
 		for (IdentificadorContext id : ctx.identificador()) {
 			String simbolo = id.getText();
 			String tipoDoToken = "variavel";
@@ -101,7 +106,11 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			}
 
 			indentacao();
-			saida.println(tipoC + " " + simbolo + ";");
+			saida.print(tipoC + " ");
+			if (tipoDeDado.startsWith("^")) {
+				saida.print("*");
+			}
+			saida.println(simbolo + ";");
 
 		}
 		return null;
@@ -196,6 +205,9 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		/* cmdAtribuicao: '^' ? identificador '<-' expressao */
 
 		indentacao();
+		if (ctx.getStart().getText().equals("^")) {
+			saida.print("*");
+		}
 		saida.print(ctx.identificador().getText());
 		saida.print(" = ");
 		saida.print(ctx.expressao().getText());
@@ -490,7 +502,10 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		String retorno = "";
 
-		if (ctx.getText().startsWith("^")) {
+		System.out.println(ctx.getText());
+
+		if (ctx.getText().contains("^")) {
+			System.out.println("Tem");
 			retorno += "*";
 		}
 
