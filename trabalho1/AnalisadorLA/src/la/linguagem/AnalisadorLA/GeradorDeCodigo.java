@@ -10,6 +10,7 @@ import la.linguagem.ANTLR.laParser.CmdCasoContext;
 import la.linguagem.ANTLR.laParser.CmdContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
+import la.linguagem.ANTLR.laParser.CmdParaContext;
 import la.linguagem.ANTLR.laParser.CmdSeContext;
 import la.linguagem.ANTLR.laParser.CorpoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
@@ -289,6 +290,29 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		}
 		escopos.desempilhar();
 
+		indentacao();
+		saida.println("}");
+
+		return null;
+	}
+
+	@Override
+	public String visitCmdPara(CmdParaContext ctx) {
+		/*
+		 * cmdPara: 'para' IDENT '<-' expressao_aritmetica 'ate' expressao_aritmetica
+		 * 'faca' cmd* 'fim_para'
+		 */
+
+		indentacao();
+		String variavel = ctx.IDENT().getText();
+		saida.println("for ( " + variavel + " = " + ctx.expressao_aritmetica(0).getText() + "; " + variavel + " <= "
+				+ ctx.expressao_aritmetica(1).getText() + "; " + variavel + "++ ) {");
+
+		escopos.empilhar(new TabelaDeSimbolos("para"));
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
+		escopos.desempilhar();
 		indentacao();
 		saida.println("}");
 
