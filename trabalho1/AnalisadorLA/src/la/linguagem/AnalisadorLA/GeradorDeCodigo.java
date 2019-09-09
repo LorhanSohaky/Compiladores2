@@ -10,6 +10,7 @@ import la.linguagem.ANTLR.laParser.CmdCasoContext;
 import la.linguagem.ANTLR.laParser.CmdContext;
 import la.linguagem.ANTLR.laParser.CmdEnquantoContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
+import la.linguagem.ANTLR.laParser.CmdFacaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
 import la.linguagem.ANTLR.laParser.CmdParaContext;
 import la.linguagem.ANTLR.laParser.CmdSeContext;
@@ -340,6 +341,24 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	}
 
 	@Override
+	public String visitCmdFaca(CmdFacaContext ctx) {
+		/* cmdFaca: 'faca' cmd* 'ate' expressao */
+
+		indentacao();
+		saida.println("do {");
+
+		escopos.empilhar(new TabelaDeSimbolos("faca"));
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
+		escopos.desempilhar();
+
+		indentacao();
+		saida.println("} while ( " + visitExpressao(ctx.expressao()) + " );");
+		return null;
+	}
+
+	@Override
 	public String visitExpressao(ExpressaoContext ctx) {
 		/* expressao: termo_logico (operador_logico_nivel_1 termo_logico)* */
 
@@ -355,6 +374,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	@Override
 	public String visitTermo_logico(Termo_logicoContext ctx) {
 		/* termo_logico: fator_logico (operador_logico_nivel_2 fator_logico)* */
+
 		String retorno = "";
 		for (Fator_logicoContext fatorLogico : ctx.fator_logico()) {
 			retorno += visitFator_logico(fatorLogico);
@@ -398,11 +418,12 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		 */
 
 		String retorno = "";
-		retorno += ctx.expressao_aritmetica(0).getText();
+		retorno += visitExpressao_aritmetica(ctx.expressao_aritmetica(0));
 		if (ctx.operador_relacional() != null) {
 			retorno += operadorRelacionalLA2C(ctx.operador_relacional().getText());
 			retorno += visitExpressao_aritmetica(ctx.expressao_aritmetica(1));
 		}
+
 		return retorno;
 	}
 
