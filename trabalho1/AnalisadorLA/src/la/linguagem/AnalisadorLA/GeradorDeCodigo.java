@@ -61,6 +61,9 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	public String visitDeclaracaoLocalConstante(DeclaracaoLocalConstanteContext ctx) {
 		/* declaracao_local: 'constante' IDENT ':' tipo_basico '=' valor_constante */
 
+		saida.print("#define ");
+		saida.println(ctx.IDENT().getText() + " " + ctx.valor_constante().getText());
+
 		return null;
 	}
 
