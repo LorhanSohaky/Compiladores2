@@ -69,9 +69,9 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 
 				// variável é um registro sem nome
 				if (tipoCompleto.contains("registro")) {
-
 					if (!tabelaDeRegistros.containsKey(identificador)) {
 						tabelaDeRegistros.put(identificador, new ArrayList<>());
+						visitChildren(ctx.tipo());
 					}
 				}
 
@@ -81,7 +81,9 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 							"campo");
 					// adicionando variável à lista de atributos do registro
 					id_reg = id_reg.substring(id_reg.indexOf("[") + 1, id_reg.indexOf("]"));
-					tabelaDeRegistros.get(id_reg).add(atributo);
+					if (tabelaDeRegistros.containsKey(id_reg)) {
+						tabelaDeRegistros.get(id_reg).add(atributo);
+					}
 				}
 				pilhaDeTabelas.topo().adicionarSimbolo(identificador, tipoCompleto, "variavel");
 			}
@@ -159,6 +161,21 @@ public class AnalisadorSemantico extends laBaseVisitor<Object> {
 				}
 
 			} else {
+				if (tipoDoIdentificador.startsWith("registro")) {
+					String identificador = ctx.identificador().getText();
+					if (identificador.contains(".")) {
+						String registro = identificador.substring(0, identificador.indexOf("."));
+						String atributo = identificador.substring(identificador.indexOf(".") + 1,
+								identificador.length());
+						for (EntradaTabelaDeSimbolos item : tabelaDeRegistros.get(registro)) {
+							if (atributo.equals(item.getSimbolo())) {
+								tipoDoIdentificador = item.getTipoDeDado();
+								break;
+							}
+						}
+					}
+				}
+
 				if (!isTiposCompativeis(tipoDoIdentificador, tipoDaExpressao)) {
 					incompativel = true;
 				}
