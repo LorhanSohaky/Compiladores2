@@ -17,6 +17,7 @@ import la.linguagem.ANTLR.laParser.CmdSeContext;
 import la.linguagem.ANTLR.laParser.CorpoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
+import la.linguagem.ANTLR.laParser.DeclaracaoLocalVariavelContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
 import la.linguagem.ANTLR.laParser.Expressao_aritmeticaContext;
 import la.linguagem.ANTLR.laParser.Expressao_relacionalContext;
@@ -30,8 +31,10 @@ import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
 import la.linguagem.ANTLR.laParser.Parcela_unariaContext;
 import la.linguagem.ANTLR.laParser.ProgramaContext;
+import la.linguagem.ANTLR.laParser.RegistroContext;
 import la.linguagem.ANTLR.laParser.TermoContext;
 import la.linguagem.ANTLR.laParser.Termo_logicoContext;
+import la.linguagem.ANTLR.laParser.TipoContext;
 import la.linguagem.ANTLR.laParser.Tipo_estendidoContext;
 import la.linguagem.ANTLR.laParser.VariavelContext;
 
@@ -71,10 +74,48 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	}
 
 	@Override
+	public String visitDeclaracaoLocalVariavel(DeclaracaoLocalVariavelContext ctx) {
+		/* 'declare' variavel */
+		/*
+		 * variavel: identificadores+=identificador (','
+		 * identificadores+=identificador)* ':' tipo
+		 */
+
+		if (ctx.variavel().tipo().registro() != null) {
+			if (!escopos.topo().existeSimbolo(ctx.variavel().tipo().getText())) {
+				for (IdentificadorContext id : ctx.variavel().identificador()) {
+					String var = id.getText();
+
+					indentacao();
+					saida.println("struct {");
+					tabelaDeRegistros.put(var, new ArrayList<EntradaTabelaDeSimbolos>());
+					escopos.empilhar(new TabelaDeSimbolos("registro" + var));
+					visitChildren(ctx.variavel().tipo().registro());
+					escopos.desempilhar();
+
+					indentacao();
+					saida.println("} " + var + ";");
+					escopos.topo().adicionarSimbolo(var, "registro", "variavel");
+				}
+			}
+		} else {
+			super.visitDeclaracaoLocalVariavel(ctx);
+		}
+		return null;
+	}
+
+	@Override
 	public String visitDeclaracaoLocalTipo(DeclaracaoLocalTipoContext ctx) {
 		/* 'tipo' IDENT ':' tipo # declaracao_local_tipo */
 
 		return null;
+	}
+
+	@Override
+	public String visitTipo(TipoContext ctx) {
+		/* tipo: registro | tipo_estendido */
+
+		return super.visitTipo(ctx);
 	}
 
 	@Override
@@ -95,6 +136,13 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			String simbolo = id.getText();
 			String tipoDoToken = "variavel";
 
+			if (escopos.topo().getEscopo().startsWith("registro")) {
+				String escopo = escopos.topo().getEscopo();
+				String key = escopo.substring("registro".length(), escopo.length());
+
+				tabelaDeRegistros.get(key).add(new EntradaTabelaDeSimbolos(simbolo, tipoDeDado));
+			}
+
 			if (!id.dimensao().getText().isEmpty()) {
 				simbolo = simbolo.substring(0, simbolo.indexOf("["));
 				tipoDoToken += " vetor";
@@ -103,6 +151,8 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 			if (tipoDeDado.equals("literal")) {
 				simbolo += "[1024]";
+			} else if (tipoDeDado.startsWith("registro")) {
+
 			}
 
 			indentacao();
@@ -127,6 +177,13 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		indentacao();
 		saida.println("return 0;");
 		saida.println("}");
+		return null;
+	}
+
+	@Override
+	public String visitRegistro(RegistroContext ctx) {
+		/* registro: 'registro' variavel* 'fim_registro' */
+
 		return null;
 	}
 
@@ -181,7 +238,20 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 				formato += texto.substring(texto.indexOf("\"") + 1, texto.lastIndexOf("\""));
 			} else {
 				String tipo = verificaTipo(expressao);
-				formato += formatoLA2C(tipo);
+				if (tipo.startsWith("registro")) {
+					String registro = texto.substring(0, texto.indexOf("."));
+					String atributo = texto.substring(texto.indexOf(".") + 1, texto.length());
+
+					for (EntradaTabelaDeSimbolos entrada : tabelaDeRegistros.get(registro)) {
+						if (atributo.equals(entrada.getSimbolo())) {
+							formato += formatoLA2C(entrada.getTipoDeDado());
+							break;
+						}
+					}
+				} else {
+					formato += formatoLA2C(tipo);
+				}
+
 				argumentos += texto + ",";
 			}
 		}
@@ -204,14 +274,20 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	public String visitCmdAtribuicao(CmdAtribuicaoContext ctx) {
 		/* cmdAtribuicao: '^' ? identificador '<-' expressao */
 
+		String identificador = ctx.identificador().getText();
+		String expressao = ctx.expressao().getText();
+
 		indentacao();
-		if (ctx.getStart().getText().equals("^")) {
-			saida.print("*");
+		if (ctx.expressao().getText().startsWith("\"")) {
+			saida.println("strcpy( " + identificador + ", " + expressao + ");");
+		} else {
+			if (ctx.getStart().getText().equals("^")) {
+				saida.print("*");
+			}
+
+			saida.println(ctx.identificador().getText() + " = " + expressao + ";");
 		}
-		saida.print(ctx.identificador().getText());
-		saida.print(" = ");
-		saida.print(ctx.expressao().getText());
-		saida.println(";");
+
 		return null;
 	}
 
@@ -502,10 +578,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		String retorno = "";
 
-		System.out.println(ctx.getText());
-
 		if (ctx.getText().contains("^")) {
-			System.out.println("Tem");
 			retorno += "*";
 		}
 
