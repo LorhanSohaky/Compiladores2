@@ -278,7 +278,14 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			}
 		}
 
+		indentacao();
+		saida.println("default:");
+		escopos.empilhar(new TabelaDeSimbolos("default"));
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
 		escopos.desempilhar();
+
 		indentacao();
 		saida.println("}");
 
