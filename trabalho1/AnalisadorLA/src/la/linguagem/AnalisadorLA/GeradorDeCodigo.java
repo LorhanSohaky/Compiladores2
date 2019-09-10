@@ -7,6 +7,7 @@ import java.util.List;
 import la.linguagem.ANTLR.laBaseVisitor;
 import la.linguagem.ANTLR.laParser.CmdAtribuicaoContext;
 import la.linguagem.ANTLR.laParser.CmdCasoContext;
+import la.linguagem.ANTLR.laParser.CmdChamadaContext;
 import la.linguagem.ANTLR.laParser.CmdContext;
 import la.linguagem.ANTLR.laParser.CmdEnquantoContext;
 import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
@@ -18,6 +19,8 @@ import la.linguagem.ANTLR.laParser.CorpoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalVariavelContext;
+import la.linguagem.ANTLR.laParser.Declaracao_global_procedimentoContext;
+import la.linguagem.ANTLR.laParser.Declaracao_localContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
 import la.linguagem.ANTLR.laParser.Expressao_aritmeticaContext;
 import la.linguagem.ANTLR.laParser.Expressao_relacionalContext;
@@ -26,6 +29,7 @@ import la.linguagem.ANTLR.laParser.Fator_logicoContext;
 import la.linguagem.ANTLR.laParser.IdentificadorContext;
 import la.linguagem.ANTLR.laParser.Item_selecaoContext;
 import la.linguagem.ANTLR.laParser.Numero_intervaloContext;
+import la.linguagem.ANTLR.laParser.ParametroContext;
 import la.linguagem.ANTLR.laParser.ParcelaContext;
 import la.linguagem.ANTLR.laParser.Parcela_logicaContext;
 import la.linguagem.ANTLR.laParser.Parcela_nao_unariaContext;
@@ -59,6 +63,58 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		escopos.desempilhar();
 
 		return null;
+	}
+
+	@Override
+	public String visitDeclaracao_global_procedimento(Declaracao_global_procedimentoContext ctx) {
+		/*
+		 * 'procedimento' IDENT '(' parametros ? ')' declaracao_local* cmd*
+		 * 'fim_procedimento'
+		 */
+
+		String nome = ctx.IDENT().getText();
+
+		saida.print("void " + nome + " ( ");
+
+		tabelaDeParametros.put(nome, new ArrayList<EntradaTabelaDeSimbolos>());
+		escopos.empilhar(new TabelaDeSimbolos("procedimento" + nome));
+		if (ctx.parametros() != null) {
+			/* parametro (',' parametro)* */
+			/* 'var' ? identificador (',' identificador)* ':' tipo_estendido */
+
+			String parametros = "";
+
+			for (ParametroContext parametro : ctx.parametros().parametro()) {
+				String tipo = parametro.tipo_estendido().getText();
+
+				for (IdentificadorContext identificador : parametro.identificador()) {
+					String simbolo = identificador.getText();
+					tabelaDeParametros.get(nome).add(new EntradaTabelaDeSimbolos(simbolo, tipo));
+					escopos.topo().adicionarSimbolo(simbolo, tipo);
+
+					parametros += tipoLA2C(tipo) + " " + simbolo + ",";
+				}
+
+			}
+			parametros = parametros.substring(0, parametros.lastIndexOf(","));
+			saida.print(parametros);
+
+		}
+		saida.println(" ) {");
+
+		for (Declaracao_localContext declaracao : ctx.declaracao_local()) {
+			visit(declaracao);
+		}
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
+
+		escopos.desempilhar();
+
+		saida.println("}");
+
+		return null;
+
 	}
 
 	@Override
@@ -194,6 +250,22 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	}
 
 	@Override
+	public String visitCmdChamada(CmdChamadaContext ctx) {
+		/* IDENT '(' expressao (',' expressao)* ')' */
+
+		indentacao();
+		saida.print(ctx.IDENT().getText() + " ( ");
+		String argumentos = "";
+		for (ExpressaoContext expressao : ctx.expressao()) {
+			argumentos += expressao.getText() + ", ";
+		}
+		argumentos = argumentos.substring(0, argumentos.lastIndexOf(","));
+		saida.println(argumentos + " );");
+
+		return null;
+	}
+
+	@Override
 	public String visitCmdLeia(CmdLeiaContext ctx) {
 		/*
 		 * cmdLeia: 'leia' '(' '^' ? identificadores+=identificador (',' '^' ?
@@ -237,7 +309,6 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		String argumentos = "";
 
 		for (ExpressaoContext expressao : ctx.expressao()) {
-
 			String texto = expressao.getText();
 
 			if (texto.contains("\"")) {
