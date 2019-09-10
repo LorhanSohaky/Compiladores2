@@ -282,10 +282,12 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 			}
 			escopos.topo().adicionarSimbolo(simbolo, tipoDeDado, tipoDoToken);
 
+			if (!id.dimensao().getText().isEmpty()) {
+				simbolo += id.dimensao().getText();
+			}
+
 			if (tipoDeDado.equals("literal")) {
 				simbolo += "[1024]";
-			} else if (tipoDeDado.startsWith("registro")) {
-
 			}
 
 			indentacao();
