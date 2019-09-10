@@ -14,11 +14,13 @@ import la.linguagem.ANTLR.laParser.CmdEscrevaContext;
 import la.linguagem.ANTLR.laParser.CmdFacaContext;
 import la.linguagem.ANTLR.laParser.CmdLeiaContext;
 import la.linguagem.ANTLR.laParser.CmdParaContext;
+import la.linguagem.ANTLR.laParser.CmdRetorneContext;
 import la.linguagem.ANTLR.laParser.CmdSeContext;
 import la.linguagem.ANTLR.laParser.CorpoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalConstanteContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalTipoContext;
 import la.linguagem.ANTLR.laParser.DeclaracaoLocalVariavelContext;
+import la.linguagem.ANTLR.laParser.Declaracao_global_funcaoContext;
 import la.linguagem.ANTLR.laParser.Declaracao_global_procedimentoContext;
 import la.linguagem.ANTLR.laParser.Declaracao_localContext;
 import la.linguagem.ANTLR.laParser.ExpressaoContext;
@@ -66,6 +68,66 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	}
 
 	@Override
+	public String visitDeclaracao_global_funcao(Declaracao_global_funcaoContext ctx) {
+		/*
+		 * 'funcao' IDENT '(' parametros ? ')' ':' tipo_estendido declaracao_local* cmd*
+		 * 'fim_funcao'
+		 */
+		String nome = ctx.IDENT().getText();
+		String tipo_estendido = ctx.tipo_estendido().getText();
+
+		tipo_estendido = tipoLA2C(tipo_estendido);
+		if (tipo_estendido.equals("literal")) {
+			tipo_estendido += "*";
+		}
+
+		saida.print(tipo_estendido + " " + nome + " ( ");
+
+		tabelaDeParametros.put(nome, new ArrayList<EntradaTabelaDeSimbolos>());
+		escopos.topo().adicionarSimbolo(nome, ctx.tipo_estendido().getText());
+		escopos.empilhar(new TabelaDeSimbolos("funcao" + nome));
+		if (ctx.parametros() != null) {
+			/* parametro (',' parametro)* */
+			/* 'var' ? identificador (',' identificador)* ':' tipo_estendido */
+
+			String parametros = "";
+
+			for (ParametroContext parametro : ctx.parametros().parametro()) {
+				String tipo = parametro.tipo_estendido().getText();
+
+				for (IdentificadorContext identificador : parametro.identificador()) {
+					String simbolo = identificador.getText();
+					tabelaDeParametros.get(nome).add(new EntradaTabelaDeSimbolos(simbolo, tipo));
+					escopos.topo().adicionarSimbolo(simbolo, tipo);
+					if (tipo.equals("literal")) {
+						parametros += tipoLA2C(tipo) + "* " + simbolo + ",";
+					} else {
+						parametros += tipoLA2C(tipo) + " " + simbolo + ",";
+					}
+				}
+
+			}
+			parametros = parametros.substring(0, parametros.lastIndexOf(","));
+			saida.print(parametros);
+
+		}
+		saida.println(" ) {");
+
+		for (Declaracao_localContext declaracao : ctx.declaracao_local()) {
+			visit(declaracao);
+		}
+		for (CmdContext comando : ctx.cmd()) {
+			visitCmd(comando);
+		}
+
+		escopos.desempilhar();
+
+		saida.println("}");
+
+		return null;
+	}
+
+	@Override
 	public String visitDeclaracao_global_procedimento(Declaracao_global_procedimentoContext ctx) {
 		/*
 		 * 'procedimento' IDENT '(' parametros ? ')' declaracao_local* cmd*
@@ -91,8 +153,11 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 					String simbolo = identificador.getText();
 					tabelaDeParametros.get(nome).add(new EntradaTabelaDeSimbolos(simbolo, tipo));
 					escopos.topo().adicionarSimbolo(simbolo, tipo);
-
-					parametros += tipoLA2C(tipo) + " " + simbolo + ",";
+					if (tipo.equals("literal")) {
+						parametros += tipoLA2C(tipo) + "* " + simbolo + ",";
+					} else {
+						parametros += tipoLA2C(tipo) + " " + simbolo + ",";
+					}
 				}
 
 			}
@@ -114,7 +179,6 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		saida.println("}");
 
 		return null;
-
 	}
 
 	@Override
@@ -524,6 +588,15 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 	}
 
 	@Override
+	public String visitCmdRetorne(CmdRetorneContext ctx) {
+		/* 'retorne' expressao */
+
+		indentacao();
+		saida.println("return " + visitExpressao(ctx.expressao()) + ";");
+		return super.visitCmdRetorne(ctx);
+	}
+
+	@Override
 	public String visitExpressao(ExpressaoContext ctx) {
 		/* expressao: termo_logico (operador_logico_nivel_1 termo_logico)* */
 
@@ -598,7 +671,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		String retorno = visitTermo(ctx.termo(0));
 		for (int i = 1; i < ctx.termo().size(); i++) {
-			retorno += ctx.operador_nivel_1(i - 1);
+			retorno += ctx.operador_nivel_1(i - 1).getText();
 			retorno += visitTermo(ctx.termo(i));
 		}
 		return retorno;
@@ -610,7 +683,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		String retorno = visitFator(ctx.fator(0));
 		for (int i = 1; i < ctx.fator().size(); i++) {
-			retorno += ctx.operador_nivel_2(i - 1);
+			retorno += ctx.operador_nivel_2(i - 1).getText();
 			retorno += visitFator(ctx.fator(i));
 		}
 		return retorno;
@@ -622,7 +695,7 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 
 		String retorno = visitParcela(ctx.parcela(0));
 		for (int i = 1; i < ctx.parcela().size(); i++) {
-			retorno += ctx.operador_nivel_3(i - 1);
+			retorno += ctx.operador_nivel_3(i - 1).getText();
 			retorno += visitParcela(ctx.parcela(i));
 		}
 		return retorno;
@@ -905,7 +978,6 @@ public class GeradorDeCodigo extends laBaseVisitor<String> {
 		} else if (ctx.identificador() != null) {
 			return "&identificador";
 		}
-
 		return null;
 	}
 
