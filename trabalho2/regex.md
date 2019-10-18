@@ -27,3 +27,7 @@ Gerar um `\textit{}`
 Regra: `\*{2}[^\*]+\*{2}`
 
 Gerar um `\textbf{}`
+
+## Título
+### H1
+Regra: `^\#{1} .+$`
