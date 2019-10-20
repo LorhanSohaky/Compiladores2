@@ -33,3 +33,12 @@ Obs: é necessário fazer uma regra só para negrito + itálico
 ## Título
 ### H1
 Regra: `^\#{1} .+$`
+Gerar um `\section{}`
+
+### H2
+Regra: `^\#{2} .+$`
+Gerar um `\subsection{}`
+
+### H3
+Regra: `^\#{3} .+$`
+Gerar um `\subsubsection{}`
