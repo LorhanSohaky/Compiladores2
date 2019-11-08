@@ -11,9 +11,9 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-import antlr.laLexer;
-import antlr.laParser;
-import antlr.laParser.ProgramaContext;
+import antlr.marktexLexer;
+import antlr.marktexParser;
+import antlr.marktexParser.DocumentContext;
 
 public class App {
 	private static String inputFileName;
@@ -31,18 +31,18 @@ public class App {
 		InputStream casoDeTesteEntrada = new FileInputStream(initialFile);
 		CharStream cs;
 		cs = CharStreams.fromStream(casoDeTesteEntrada);
-		laLexer lexer = new laLexer(cs);
+		marktexLexer lexer = new marktexLexer(cs);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		try {
 			/* Análise gramatical */
-			laParser parser = new laParser(tokens);
+			marktexParser parser = new marktexParser(tokens);
 			parser.addErrorListener(new T1ErrorListener(out));
-			ProgramaContext arvore = parser.programa();
+			DocumentContext arvore = parser.document();
 
 			/* Análise semântica */
 			if (!out.isModificado()) {
 				AnalisadorSemantico analisador = new AnalisadorSemantico();
-				analisador.visitPrograma(arvore);
+				analisador.visitDocument(arvore);
 
 			}
 
@@ -50,7 +50,7 @@ public class App {
 			if (!out.isModificado()) {
 				geracaoDecodigo = true;
 				GeradorDeCodigo gerador = new GeradorDeCodigo();
-				gerador.visitPrograma(arvore);
+				gerador.visitDocument(arvore);
 			}
 
 		} catch (ParseCancellationException pce) {
