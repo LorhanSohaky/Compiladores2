@@ -1,3 +1,2 @@
 Main-Class: analisadorMarkdown.App
-
 Class-Path: libs/antlr-4.7.2-complete.jar
