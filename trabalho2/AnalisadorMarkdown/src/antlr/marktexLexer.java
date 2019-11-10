@@ -17,7 +17,9 @@ public class marktexLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, TITLE=11, AUTHOR=12, AUTHORS=13, DATE=14, COMENTARIO=15, WS=16, 
+		BODY=17, ERRO=18;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
 	};
@@ -28,20 +30,24 @@ public class marktexLexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8"
+			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8", 
+			"T__9", "TITLE", "AUTHOR", "AUTHORS", "DATE", "COMENTARIO", "WS", "BODY", 
+			"ERRO"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'---'", "'type'", "':'", "'article'", "'monography'", "'title'", 
-			"'author'", "'date'", "'header-includes'"
+			null, "'+++++'", "'+++++\n'", "'type'", "':'", "'article'", "'monography'", 
+			"'title'", "'author'", "'date'", "'header-includes'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
+			null, null, null, null, null, null, null, null, null, null, null, "TITLE", 
+			"AUTHOR", "AUTHORS", "DATE", "COMENTARIO", "WS", "BODY", "ERRO"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -79,6 +85,12 @@ public class marktexLexer extends Lexer {
 	}
 
 
+	   public static String grupo="740951 587087 586730 619884";
+	   void erroLexico(String mensagem) {
+	      throw new ParseCancellationException(mensagem);
+	   }
+
+
 	public marktexLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
@@ -102,27 +114,92 @@ public class marktexLexer extends Lexer {
 	@Override
 	public ATN getATN() { return _ATN; }
 
+	@Override
+	public void action(RuleContext _localctx, int ruleIndex, int actionIndex) {
+		switch (ruleIndex) {
+		case 14:
+			COMENTARIO_action((RuleContext)_localctx, actionIndex);
+			break;
+		case 15:
+			WS_action((RuleContext)_localctx, actionIndex);
+			break;
+		case 17:
+			ERRO_action((RuleContext)_localctx, actionIndex);
+			break;
+		}
+	}
+	private void COMENTARIO_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 0:
+			skip();
+			break;
+		}
+	}
+	private void WS_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 1:
+			skip();
+			break;
+		}
+	}
+	private void ERRO_action(RuleContext _localctx, int actionIndex) {
+		switch (actionIndex) {
+		case 2:
+			 erroLexico("Linha "+getLine()+": "+getText()+" - simbolo nao identificado"); 
+			break;
+		}
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\13U\b\1\4\2\t\2\4"+
-		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2"+
-		"\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3"+
-		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\b"+
-		"\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3"+
-		"\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\2\2\13\3\3\5\4\7\5\t\6\13\7\r\b"+
-		"\17\t\21\n\23\13\3\2\2\2T\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2"+
-		"\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2\2\2\23\3\2\2\2\3"+
-		"\25\3\2\2\2\5\31\3\2\2\2\7\36\3\2\2\2\t \3\2\2\2\13(\3\2\2\2\r\63\3\2"+
-		"\2\2\179\3\2\2\2\21@\3\2\2\2\23E\3\2\2\2\25\26\7/\2\2\26\27\7/\2\2\27"+
-		"\30\7/\2\2\30\4\3\2\2\2\31\32\7v\2\2\32\33\7{\2\2\33\34\7r\2\2\34\35\7"+
-		"g\2\2\35\6\3\2\2\2\36\37\7<\2\2\37\b\3\2\2\2 !\7c\2\2!\"\7t\2\2\"#\7v"+
-		"\2\2#$\7k\2\2$%\7e\2\2%&\7n\2\2&\'\7g\2\2\'\n\3\2\2\2()\7o\2\2)*\7q\2"+
-		"\2*+\7p\2\2+,\7q\2\2,-\7i\2\2-.\7t\2\2./\7c\2\2/\60\7r\2\2\60\61\7j\2"+
-		"\2\61\62\7{\2\2\62\f\3\2\2\2\63\64\7v\2\2\64\65\7k\2\2\65\66\7v\2\2\66"+
-		"\67\7n\2\2\678\7g\2\28\16\3\2\2\29:\7c\2\2:;\7w\2\2;<\7v\2\2<=\7j\2\2"+
-		"=>\7q\2\2>?\7t\2\2?\20\3\2\2\2@A\7f\2\2AB\7c\2\2BC\7v\2\2CD\7g\2\2D\22"+
-		"\3\2\2\2EF\7j\2\2FG\7g\2\2GH\7c\2\2HI\7f\2\2IJ\7g\2\2JK\7t\2\2KL\7/\2"+
-		"\2LM\7k\2\2MN\7p\2\2NO\7e\2\2OP\7n\2\2PQ\7w\2\2QR\7f\2\2RS\7g\2\2ST\7"+
-		"u\2\2T\24\3\2\2\2\3\2\2";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\24\u00aa\b\1\4\2"+
+		"\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4"+
+		"\13\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22"+
+		"\t\22\4\23\t\23\3\2\3\2\3\2\3\2\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
+		"\4\3\4\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7\3\7\3\7"+
+		"\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3"+
+		"\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13"+
+		"\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\f\7\fr\n\f\f\f\16\fu\13"+
+		"\f\3\f\3\f\3\r\3\r\7\r{\n\r\f\r\16\r~\13\r\3\16\3\16\3\16\7\16\u0083\n"+
+		"\16\f\16\16\16\u0086\13\16\3\16\3\16\3\17\7\17\u008b\n\17\f\17\16\17\u008e"+
+		"\13\17\3\17\3\17\3\20\3\20\7\20\u0094\n\20\f\20\16\20\u0097\13\20\3\20"+
+		"\3\20\3\20\3\21\6\21\u009d\n\21\r\21\16\21\u009e\3\21\3\21\3\22\6\22\u00a4"+
+		"\n\22\r\22\16\22\u00a5\3\23\3\23\3\23\3\u00a5\2\24\3\3\5\4\7\5\t\6\13"+
+		"\7\r\b\17\t\21\n\23\13\25\f\27\r\31\16\33\17\35\20\37\21!\22#\23%\24\3"+
+		"\2\b\5\2\f\f\17\17))\4\2C\\c|\5\2\"\"C\\c|\6\2\"\"\61;C\\c|\4\2\f\f\17"+
+		"\17\5\2\13\f\17\17\"\"\2\u00b0\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\t"+
+		"\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2\2\2\21\3\2\2\2\2\23\3\2\2"+
+		"\2\2\25\3\2\2\2\2\27\3\2\2\2\2\31\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2\2\2"+
+		"\37\3\2\2\2\2!\3\2\2\2\2#\3\2\2\2\2%\3\2\2\2\3\'\3\2\2\2\5-\3\2\2\2\7"+
+		"\64\3\2\2\2\t9\3\2\2\2\13;\3\2\2\2\rC\3\2\2\2\17N\3\2\2\2\21T\3\2\2\2"+
+		"\23[\3\2\2\2\25`\3\2\2\2\27s\3\2\2\2\31x\3\2\2\2\33\177\3\2\2\2\35\u008c"+
+		"\3\2\2\2\37\u0091\3\2\2\2!\u009c\3\2\2\2#\u00a3\3\2\2\2%\u00a7\3\2\2\2"+
+		"\'(\7-\2\2()\7-\2\2)*\7-\2\2*+\7-\2\2+,\7-\2\2,\4\3\2\2\2-.\7-\2\2./\7"+
+		"-\2\2/\60\7-\2\2\60\61\7-\2\2\61\62\7-\2\2\62\63\7\f\2\2\63\6\3\2\2\2"+
+		"\64\65\7v\2\2\65\66\7{\2\2\66\67\7r\2\2\678\7g\2\28\b\3\2\2\29:\7<\2\2"+
+		":\n\3\2\2\2;<\7c\2\2<=\7t\2\2=>\7v\2\2>?\7k\2\2?@\7e\2\2@A\7n\2\2AB\7"+
+		"g\2\2B\f\3\2\2\2CD\7o\2\2DE\7q\2\2EF\7p\2\2FG\7q\2\2GH\7i\2\2HI\7t\2\2"+
+		"IJ\7c\2\2JK\7r\2\2KL\7j\2\2LM\7{\2\2M\16\3\2\2\2NO\7v\2\2OP\7k\2\2PQ\7"+
+		"v\2\2QR\7n\2\2RS\7g\2\2S\20\3\2\2\2TU\7c\2\2UV\7w\2\2VW\7v\2\2WX\7j\2"+
+		"\2XY\7q\2\2YZ\7t\2\2Z\22\3\2\2\2[\\\7f\2\2\\]\7c\2\2]^\7v\2\2^_\7g\2\2"+
+		"_\24\3\2\2\2`a\7j\2\2ab\7g\2\2bc\7c\2\2cd\7f\2\2de\7g\2\2ef\7t\2\2fg\7"+
+		"/\2\2gh\7k\2\2hi\7p\2\2ij\7e\2\2jk\7n\2\2kl\7w\2\2lm\7f\2\2mn\7g\2\2n"+
+		"o\7u\2\2o\26\3\2\2\2pr\n\2\2\2qp\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2"+
+		"tv\3\2\2\2us\3\2\2\2vw\7\f\2\2w\30\3\2\2\2x|\t\3\2\2y{\t\4\2\2zy\3\2\2"+
+		"\2{~\3\2\2\2|z\3\2\2\2|}\3\2\2\2}\32\3\2\2\2~|\3\2\2\2\177\u0084\5\31"+
+		"\r\2\u0080\u0081\7=\2\2\u0081\u0083\5\31\r\2\u0082\u0080\3\2\2\2\u0083"+
+		"\u0086\3\2\2\2\u0084\u0082\3\2\2\2\u0084\u0085\3\2\2\2\u0085\u0087\3\2"+
+		"\2\2\u0086\u0084\3\2\2\2\u0087\u0088\7\f\2\2\u0088\34\3\2\2\2\u0089\u008b"+
+		"\t\5\2\2\u008a\u0089\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2\2\2\u008c"+
+		"\u008d\3\2\2\2\u008d\u008f\3\2\2\2\u008e\u008c\3\2\2\2\u008f\u0090\7\f"+
+		"\2\2\u0090\36\3\2\2\2\u0091\u0095\7}\2\2\u0092\u0094\n\6\2\2\u0093\u0092"+
+		"\3\2\2\2\u0094\u0097\3\2\2\2\u0095\u0093\3\2\2\2\u0095\u0096\3\2\2\2\u0096"+
+		"\u0098\3\2\2\2\u0097\u0095\3\2\2\2\u0098\u0099\7\177\2\2\u0099\u009a\b"+
+		"\20\2\2\u009a \3\2\2\2\u009b\u009d\t\7\2\2\u009c\u009b\3\2\2\2\u009d\u009e"+
+		"\3\2\2\2\u009e\u009c\3\2\2\2\u009e\u009f\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0"+
+		"\u00a1\b\21\3\2\u00a1\"\3\2\2\2\u00a2\u00a4\13\2\2\2\u00a3\u00a2\3\2\2"+
+		"\2\u00a4\u00a5\3\2\2\2\u00a5\u00a6\3\2\2\2\u00a5\u00a3\3\2\2\2\u00a6$"+
+		"\3\2\2\2\u00a7\u00a8\13\2\2\2\u00a8\u00a9\b\23\4\2\u00a9&\3\2\2\2\f\2"+
+		"sz|\u0084\u008a\u008c\u0095\u009e\u00a5\5\3\20\2\3\21\3\3\23\4";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

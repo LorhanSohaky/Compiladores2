@@ -52,6 +52,18 @@ public class marktexBaseListener implements marktexListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDocument_type(marktexParser.Document_typeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDocument_type(marktexParser.Document_typeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterTitle(marktexParser.TitleContext ctx) { }
 	/**
 	 * {@inheritDoc}

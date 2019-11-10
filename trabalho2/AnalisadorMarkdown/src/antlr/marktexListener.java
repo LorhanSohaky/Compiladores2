@@ -38,6 +38,16 @@ public interface marktexListener extends ParseTreeListener {
 	 */
 	void exitType(marktexParser.TypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link marktexParser#document_type}.
+	 * @param ctx the parse tree
+	 */
+	void enterDocument_type(marktexParser.Document_typeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link marktexParser#document_type}.
+	 * @param ctx the parse tree
+	 */
+	void exitDocument_type(marktexParser.Document_typeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link marktexParser#title}.
 	 * @param ctx the parse tree
 	 */

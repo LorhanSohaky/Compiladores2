@@ -18,28 +18,31 @@ public class marktexParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		STRING=10;
+		T__9=10, TITLE=11, AUTHOR=12, AUTHORS=13, DATE=14, COMENTARIO=15, WS=16, 
+		BODY=17, ERRO=18;
 	public static final int
-		RULE_document = 0, RULE_configs = 1, RULE_type = 2, RULE_title = 3, RULE_author = 4, 
-		RULE_date = 5, RULE_header_includes = 6, RULE_content = 7;
+		RULE_document = 0, RULE_configs = 1, RULE_type = 2, RULE_document_type = 3, 
+		RULE_title = 4, RULE_author = 5, RULE_date = 6, RULE_header_includes = 7, 
+		RULE_content = 8;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"document", "configs", "type", "title", "author", "date", "header_includes", 
-			"content"
+			"document", "configs", "type", "document_type", "title", "author", "date", 
+			"header_includes", "content"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'---'", "'type'", "':'", "'article'", "'monography'", "'title'", 
-			"'author'", "'date'", "'header-includes'"
+			null, "'+++++'", "'+++++\n'", "'type'", "':'", "'article'", "'monography'", 
+			"'title'", "'author'", "'date'", "'header-includes'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, "STRING"
+			null, null, null, null, null, null, null, null, null, null, null, "TITLE", 
+			"AUTHOR", "AUTHORS", "DATE", "COMENTARIO", "WS", "BODY", "ERRO"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -125,9 +128,9 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(16);
+			setState(18);
 			configs();
-			setState(17);
+			setState(19);
 			content();
 			}
 		}
@@ -183,20 +186,20 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(19);
-			match(T__0);
-			setState(20);
-			type();
 			setState(21);
-			title();
-			setState(22);
-			author();
-			setState(23);
-			date();
-			setState(24);
-			header_includes();
-			setState(25);
 			match(T__0);
+			setState(22);
+			type();
+			setState(23);
+			title();
+			setState(24);
+			author();
+			setState(25);
+			date();
+			setState(26);
+			header_includes();
+			setState(27);
+			match(T__1);
 			}
 		}
 		catch (RecognitionException re) {
@@ -211,6 +214,9 @@ public class marktexParser extends Parser {
 	}
 
 	public static class TypeContext extends ParserRuleContext {
+		public Document_typeContext document_type() {
+			return getRuleContext(Document_typeContext.class,0);
+		}
 		public TypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -233,17 +239,58 @@ public class marktexParser extends Parser {
 	public final TypeContext type() throws RecognitionException {
 		TypeContext _localctx = new TypeContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_type);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(29);
+			match(T__2);
+			setState(30);
+			match(T__3);
+			setState(31);
+			document_type();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Document_typeContext extends ParserRuleContext {
+		public Document_typeContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_document_type; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof marktexListener ) ((marktexListener)listener).enterDocument_type(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof marktexListener ) ((marktexListener)listener).exitDocument_type(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof marktexVisitor ) return ((marktexVisitor<? extends T>)visitor).visitDocument_type(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Document_typeContext document_type() throws RecognitionException {
+		Document_typeContext _localctx = new Document_typeContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_document_type);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
-			match(T__1);
-			setState(28);
-			match(T__2);
-			setState(29);
+			setState(33);
 			_la = _input.LA(1);
-			if ( !(_la==T__3 || _la==T__4) ) {
+			if ( !(_la==T__4 || _la==T__5) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -265,7 +312,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class TitleContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(marktexParser.STRING, 0); }
+		public TerminalNode TITLE() { return getToken(marktexParser.TITLE, 0); }
 		public TitleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -287,16 +334,16 @@ public class marktexParser extends Parser {
 
 	public final TitleContext title() throws RecognitionException {
 		TitleContext _localctx = new TitleContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_title);
+		enterRule(_localctx, 8, RULE_title);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(31);
-			match(T__5);
-			setState(32);
-			match(T__2);
-			setState(33);
-			match(STRING);
+			setState(35);
+			match(T__6);
+			setState(36);
+			match(T__3);
+			setState(37);
+			match(TITLE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -311,6 +358,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class AuthorContext extends ParserRuleContext {
+		public TerminalNode AUTHORS() { return getToken(marktexParser.AUTHORS, 0); }
 		public AuthorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -332,14 +380,16 @@ public class marktexParser extends Parser {
 
 	public final AuthorContext author() throws RecognitionException {
 		AuthorContext _localctx = new AuthorContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_author);
+		enterRule(_localctx, 10, RULE_author);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
-			match(T__6);
-			setState(36);
-			match(T__2);
+			setState(39);
+			match(T__7);
+			setState(40);
+			match(T__3);
+			setState(41);
+			match(AUTHORS);
 			}
 		}
 		catch (RecognitionException re) {
@@ -354,6 +404,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class DateContext extends ParserRuleContext {
+		public TerminalNode DATE() { return getToken(marktexParser.DATE, 0); }
 		public DateContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -375,14 +426,16 @@ public class marktexParser extends Parser {
 
 	public final DateContext date() throws RecognitionException {
 		DateContext _localctx = new DateContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_date);
+		enterRule(_localctx, 12, RULE_date);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(38);
-			match(T__7);
-			setState(39);
-			match(T__2);
+			setState(43);
+			match(T__8);
+			setState(44);
+			match(T__3);
+			setState(45);
+			match(DATE);
 			}
 		}
 		catch (RecognitionException re) {
@@ -397,6 +450,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class Header_includesContext extends ParserRuleContext {
+		public TerminalNode BODY() { return getToken(marktexParser.BODY, 0); }
 		public Header_includesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -418,14 +472,16 @@ public class marktexParser extends Parser {
 
 	public final Header_includesContext header_includes() throws RecognitionException {
 		Header_includesContext _localctx = new Header_includesContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_header_includes);
+		enterRule(_localctx, 14, RULE_header_includes);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(41);
-			match(T__8);
-			setState(42);
-			match(T__2);
+			setState(47);
+			match(T__9);
+			setState(48);
+			match(T__3);
+			setState(49);
+			match(BODY);
 			}
 		}
 		catch (RecognitionException re) {
@@ -440,7 +496,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class ContentContext extends ParserRuleContext {
-		public TerminalNode STRING() { return getToken(marktexParser.STRING, 0); }
+		public TerminalNode BODY() { return getToken(marktexParser.BODY, 0); }
 		public ContentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -462,12 +518,12 @@ public class marktexParser extends Parser {
 
 	public final ContentContext content() throws RecognitionException {
 		ContentContext _localctx = new ContentContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_content);
+		enterRule(_localctx, 16, RULE_content);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
-			match(STRING);
+			setState(51);
+			match(BODY);
 			}
 		}
 		catch (RecognitionException re) {
@@ -482,17 +538,19 @@ public class marktexParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\f\61\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\3\3\3"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\6\3\6\3\6"+
-		"\3\7\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\3\3\2\6"+
-		"\7\2(\2\22\3\2\2\2\4\25\3\2\2\2\6\35\3\2\2\2\b!\3\2\2\2\n%\3\2\2\2\f("+
-		"\3\2\2\2\16+\3\2\2\2\20.\3\2\2\2\22\23\5\4\3\2\23\24\5\20\t\2\24\3\3\2"+
-		"\2\2\25\26\7\3\2\2\26\27\5\6\4\2\27\30\5\b\5\2\30\31\5\n\6\2\31\32\5\f"+
-		"\7\2\32\33\5\16\b\2\33\34\7\3\2\2\34\5\3\2\2\2\35\36\7\4\2\2\36\37\7\5"+
-		"\2\2\37 \t\2\2\2 \7\3\2\2\2!\"\7\b\2\2\"#\7\5\2\2#$\7\f\2\2$\t\3\2\2\2"+
-		"%&\7\t\2\2&\'\7\5\2\2\'\13\3\2\2\2()\7\n\2\2)*\7\5\2\2*\r\3\2\2\2+,\7"+
-		"\13\2\2,-\7\5\2\2-\17\3\2\2\2./\7\f\2\2/\21\3\2\2\2\2";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\248\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
+		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3"+
+		"\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13"+
+		"\2\4\6\b\n\f\16\20\22\2\3\3\2\7\b\2.\2\24\3\2\2\2\4\27\3\2\2\2\6\37\3"+
+		"\2\2\2\b#\3\2\2\2\n%\3\2\2\2\f)\3\2\2\2\16-\3\2\2\2\20\61\3\2\2\2\22\65"+
+		"\3\2\2\2\24\25\5\4\3\2\25\26\5\22\n\2\26\3\3\2\2\2\27\30\7\3\2\2\30\31"+
+		"\5\6\4\2\31\32\5\n\6\2\32\33\5\f\7\2\33\34\5\16\b\2\34\35\5\20\t\2\35"+
+		"\36\7\4\2\2\36\5\3\2\2\2\37 \7\5\2\2 !\7\6\2\2!\"\5\b\5\2\"\7\3\2\2\2"+
+		"#$\t\2\2\2$\t\3\2\2\2%&\7\t\2\2&\'\7\6\2\2\'(\7\r\2\2(\13\3\2\2\2)*\7"+
+		"\n\2\2*+\7\6\2\2+,\7\17\2\2,\r\3\2\2\2-.\7\13\2\2./\7\6\2\2/\60\7\20\2"+
+		"\2\60\17\3\2\2\2\61\62\7\f\2\2\62\63\7\6\2\2\63\64\7\23\2\2\64\21\3\2"+
+		"\2\2\65\66\7\23\2\2\66\23\3\2\2\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
