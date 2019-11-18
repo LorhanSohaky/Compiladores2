@@ -2,22 +2,21 @@ grammar marktex;
 
 document: configs content;
 
-configs: '+++++' type title author date header_includes '+++++\n';
+configs: '+++++' type title author+ date header_includes? '+++++';
 type: 'type' ':' document_type; 
 document_type: ('article' | 'monography');
-title: 'title' ':' TITLE;
-author: 'author' ':' AUTHORS;
+title: 'title' ':' STRING;
+author: 'author' ':' STRING;
 date: 'date' ':' DATE;
-header_includes: 'header-includes' ':' BODY;
+header_includes: 'header-includes' ':' STRING;
 
 content: BODY;
 
-TITLE: ~('\n' | '\r' | '\'')* '\n';
-AUTHOR: ([a-zA-Z]) ([a-zA-Z] | ' ')*;
-AUTHORS: AUTHOR (';' AUTHOR)* '\n';
-DATE: ([a-zA-Z] | [0-9] | ' ' | '/')* '\n';
+STRING: '"' ~('\n' | '\r' | '"')* '"' ;
 
-COMENTARIO:	'{' ~('\n' | '\r' )* '}' {skip();};
-WS	: (' ' | '\t' | '\r' | '\n' )+ {skip();};
+DATE: [0-9][0-9] '/' [0-9][0-9] '/' [0-9][0-9][0-9][0-9];
 
-BODY: .+?;
+COMENTARIO:	'{' ~('\n' | '\r' )* '}' -> skip;
+WS	: (' ' | '\t' | '\r' | '\n' )+ -> skip;
+
+BODY: '*****' .+? EOF;
