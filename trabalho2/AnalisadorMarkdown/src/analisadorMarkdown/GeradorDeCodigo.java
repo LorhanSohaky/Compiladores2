@@ -104,11 +104,9 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\n" + 
     		"\\begin{document}\n" + 
     		"\\selectlanguage{brazil}\n" + 
-    		"\\frenchspacing\n" + 
-    		"\n" + 
-    		"\\end{document}");
-
+    		"\\frenchspacing\n");
     super.visitChildren(ctx);
+    saida.println("\\end{document}");
 
     return null;
   }
