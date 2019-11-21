@@ -18,8 +18,7 @@ public class marktexParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, TITLE=11, AUTHOR=12, AUTHORS=13, DATE=14, COMENTARIO=15, WS=16, 
-		BODY=17, ERRO=18;
+		STRING=10, DATE=11, COMENTARIO=12, WS=13, BODY=14;
 	public static final int
 		RULE_document = 0, RULE_configs = 1, RULE_type = 2, RULE_document_type = 3, 
 		RULE_title = 4, RULE_author = 5, RULE_date = 6, RULE_header_includes = 7, 
@@ -34,15 +33,15 @@ public class marktexParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'+++++'", "'+++++\n'", "'type'", "':'", "'article'", "'monography'", 
-			"'title'", "'author'", "'date'", "'header-includes'"
+			null, "'+++++'", "'type'", "':'", "'article'", "'monography'", "'title'", 
+			"'author'", "'date'", "'header-includes'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, "TITLE", 
-			"AUTHOR", "AUTHORS", "DATE", "COMENTARIO", "WS", "BODY", "ERRO"
+			null, null, null, null, null, null, null, null, null, null, "STRING", 
+			"DATE", "COMENTARIO", "WS", "BODY"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -152,11 +151,14 @@ public class marktexParser extends Parser {
 		public TitleContext title() {
 			return getRuleContext(TitleContext.class,0);
 		}
-		public AuthorContext author() {
-			return getRuleContext(AuthorContext.class,0);
-		}
 		public DateContext date() {
 			return getRuleContext(DateContext.class,0);
+		}
+		public List<AuthorContext> author() {
+			return getRuleContexts(AuthorContext.class);
+		}
+		public AuthorContext author(int i) {
+			return getRuleContext(AuthorContext.class,i);
 		}
 		public Header_includesContext header_includes() {
 			return getRuleContext(Header_includesContext.class,0);
@@ -183,6 +185,7 @@ public class marktexParser extends Parser {
 	public final ConfigsContext configs() throws RecognitionException {
 		ConfigsContext _localctx = new ConfigsContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_configs);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -192,14 +195,34 @@ public class marktexParser extends Parser {
 			type();
 			setState(23);
 			title();
-			setState(24);
-			author();
-			setState(25);
+			setState(25); 
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			do {
+				{
+				{
+				setState(24);
+				author();
+				}
+				}
+				setState(27); 
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			} while ( _la==T__6 );
+			setState(29);
 			date();
-			setState(26);
-			header_includes();
-			setState(27);
-			match(T__1);
+			setState(31);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			if (_la==T__8) {
+				{
+				setState(30);
+				header_includes();
+				}
+			}
+
+			setState(33);
+			match(T__0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -242,11 +265,11 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(29);
+			setState(35);
+			match(T__1);
+			setState(36);
 			match(T__2);
-			setState(30);
-			match(T__3);
-			setState(31);
+			setState(37);
 			document_type();
 			}
 		}
@@ -288,9 +311,9 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(33);
+			setState(39);
 			_la = _input.LA(1);
-			if ( !(_la==T__4 || _la==T__5) ) {
+			if ( !(_la==T__3 || _la==T__4) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -312,7 +335,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class TitleContext extends ParserRuleContext {
-		public TerminalNode TITLE() { return getToken(marktexParser.TITLE, 0); }
+		public TerminalNode STRING() { return getToken(marktexParser.STRING, 0); }
 		public TitleContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -338,12 +361,12 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(35);
-			match(T__6);
-			setState(36);
-			match(T__3);
-			setState(37);
-			match(TITLE);
+			setState(41);
+			match(T__5);
+			setState(42);
+			match(T__2);
+			setState(43);
+			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -358,7 +381,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class AuthorContext extends ParserRuleContext {
-		public TerminalNode AUTHORS() { return getToken(marktexParser.AUTHORS, 0); }
+		public TerminalNode STRING() { return getToken(marktexParser.STRING, 0); }
 		public AuthorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -384,12 +407,12 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(39);
-			match(T__7);
-			setState(40);
-			match(T__3);
-			setState(41);
-			match(AUTHORS);
+			setState(45);
+			match(T__6);
+			setState(46);
+			match(T__2);
+			setState(47);
+			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -430,11 +453,11 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(43);
-			match(T__8);
-			setState(44);
-			match(T__3);
-			setState(45);
+			setState(49);
+			match(T__7);
+			setState(50);
+			match(T__2);
+			setState(51);
 			match(DATE);
 			}
 		}
@@ -450,7 +473,7 @@ public class marktexParser extends Parser {
 	}
 
 	public static class Header_includesContext extends ParserRuleContext {
-		public TerminalNode BODY() { return getToken(marktexParser.BODY, 0); }
+		public TerminalNode STRING() { return getToken(marktexParser.STRING, 0); }
 		public Header_includesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -476,12 +499,12 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47);
-			match(T__9);
-			setState(48);
-			match(T__3);
-			setState(49);
-			match(BODY);
+			setState(53);
+			match(T__8);
+			setState(54);
+			match(T__2);
+			setState(55);
+			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -522,7 +545,7 @@ public class marktexParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(57);
 			match(BODY);
 			}
 		}
@@ -538,19 +561,21 @@ public class marktexParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\248\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20>\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
-		"\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3"+
-		"\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13"+
-		"\2\4\6\b\n\f\16\20\22\2\3\3\2\7\b\2.\2\24\3\2\2\2\4\27\3\2\2\2\6\37\3"+
-		"\2\2\2\b#\3\2\2\2\n%\3\2\2\2\f)\3\2\2\2\16-\3\2\2\2\20\61\3\2\2\2\22\65"+
-		"\3\2\2\2\24\25\5\4\3\2\25\26\5\22\n\2\26\3\3\2\2\2\27\30\7\3\2\2\30\31"+
-		"\5\6\4\2\31\32\5\n\6\2\32\33\5\f\7\2\33\34\5\16\b\2\34\35\5\20\t\2\35"+
-		"\36\7\4\2\2\36\5\3\2\2\2\37 \7\5\2\2 !\7\6\2\2!\"\5\b\5\2\"\7\3\2\2\2"+
-		"#$\t\2\2\2$\t\3\2\2\2%&\7\t\2\2&\'\7\6\2\2\'(\7\r\2\2(\13\3\2\2\2)*\7"+
-		"\n\2\2*+\7\6\2\2+,\7\17\2\2,\r\3\2\2\2-.\7\13\2\2./\7\6\2\2/\60\7\20\2"+
-		"\2\60\17\3\2\2\2\61\62\7\f\2\2\62\63\7\6\2\2\63\64\7\23\2\2\64\21\3\2"+
-		"\2\2\65\66\7\23\2\2\66\23\3\2\2\2\2";
+		"\3\3\3\3\3\3\3\3\6\3\34\n\3\r\3\16\3\35\3\3\3\3\5\3\"\n\3\3\3\3\3\3\4"+
+		"\3\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3"+
+		"\t\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\3\3\2\6\7\2\66"+
+		"\2\24\3\2\2\2\4\27\3\2\2\2\6%\3\2\2\2\b)\3\2\2\2\n+\3\2\2\2\f/\3\2\2\2"+
+		"\16\63\3\2\2\2\20\67\3\2\2\2\22;\3\2\2\2\24\25\5\4\3\2\25\26\5\22\n\2"+
+		"\26\3\3\2\2\2\27\30\7\3\2\2\30\31\5\6\4\2\31\33\5\n\6\2\32\34\5\f\7\2"+
+		"\33\32\3\2\2\2\34\35\3\2\2\2\35\33\3\2\2\2\35\36\3\2\2\2\36\37\3\2\2\2"+
+		"\37!\5\16\b\2 \"\5\20\t\2! \3\2\2\2!\"\3\2\2\2\"#\3\2\2\2#$\7\3\2\2$\5"+
+		"\3\2\2\2%&\7\4\2\2&\'\7\5\2\2\'(\5\b\5\2(\7\3\2\2\2)*\t\2\2\2*\t\3\2\2"+
+		"\2+,\7\b\2\2,-\7\5\2\2-.\7\f\2\2.\13\3\2\2\2/\60\7\t\2\2\60\61\7\5\2\2"+
+		"\61\62\7\f\2\2\62\r\3\2\2\2\63\64\7\n\2\2\64\65\7\5\2\2\65\66\7\r\2\2"+
+		"\66\17\3\2\2\2\678\7\13\2\289\7\5\2\29:\7\f\2\2:\21\3\2\2\2;<\7\20\2\2"+
+		"<\23\3\2\2\2\4\35!";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
