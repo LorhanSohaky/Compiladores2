@@ -16,10 +16,97 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
 	@Override
   public String visitDocument(DocumentContext ctx) {
-    saida.println("#include <stdio.h>");
-    saida.println("#include <stdlib.h>");
-    saida.println("#include <string.h>");
-    saida.println("#include <stdbool.h>");
+    saida.println("\\documentclass[\n" + 
+    		"	12pt,\n" + 
+    		"	openright,\n" + 
+    		"	oneside,\n" + 
+    		"	a4paper,\n" + 
+    		"	english,\n" + 
+    		"	french,\n" + 
+    		"	spanish,\n" + 
+    		"	brazil\n" + 
+    		"	]{abntex2}\n" + 
+    		"\n" + 
+    		"\\usepackage{lmodern}\n" + 
+    		"\\usepackage[T1]{fontenc}\n" + 
+    		"\\usepackage[utf8]{inputenc}\n" + 
+    		"\\usepackage{indentfirst}\n" + 
+    		"\\usepackage{color}\n" + 
+    		"\\usepackage{graphicx}\n" + 
+    		"\\usepackage{microtype}\n" + 
+    		"\n" + 
+    		"\\usepackage[brazilian,hyperpageref]{backref}\n" + 
+    		"\\usepackage[alf]{abntex2cite}\n" + 
+    		"\n" + 
+    		"% --- \n" + 
+    		"% CONFIGURAÇÕES DE PACOTES\n" + 
+    		"% --- \n" + 
+    		"\n" + 
+    		"\\renewcommand{\\backrefpagesname}{Citado na(s) página(s):~}\n" + 
+    		"\\renewcommand{\\backref}{}\n" + 
+    		"\\renewcommand*{\\backrefalt}[4]{\n" + 
+    		"	\\ifcase #1 %\n" + 
+    		"		Nenhuma citação no texto.%\n" + 
+    		"	\\or\n" + 
+    		"		Citado na página #2.%\n" + 
+    		"	\\else\n" + 
+    		"		Citado #1 vezes nas páginas #2.%\n" + 
+    		"	\\fi}%\n" + 
+    		"\n" + 
+    		"\\titulo{Teste 0}\n" + 
+    		"\\autor{Usuário 0}\n" + 
+    		"\\data{26 de Outubro de 2019}\n" + 
+    		"\n" + 
+    		"\\definecolor{blue}{RGB}{41,5,195}\n" + 
+    		"\n" + 
+    		"\\makeatletter\n" + 
+    		"\\hypersetup{\n" + 
+    		"		pdftitle={\\@title}, \n" + 
+    		"		pdfauthor={\\@author},\n" + 
+    		"    	pdfsubject={\\imprimirpreambulo},\n" + 
+    		"	    pdfcreator={LaTeX with abnTeX2},\n" + 
+    		"		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico}, \n" + 
+    		"		colorlinks=true,\n" + 
+    		"    	linkcolor=blue,\n" + 
+    		"    	citecolor=blue,\n" + 
+    		"    	filecolor=magenta,\n" + 
+    		"		urlcolor=blue,\n" + 
+    		"		bookmarksdepth=4\n" + 
+    		"}\n" + 
+    		"\\makeatother\n" + 
+    		"% --- \n" + 
+    		"\n" + 
+    		"\\makeatletter\n" + 
+    		"\\setlength{\\@fptop}{5pt}\n" + 
+    		"\\makeatother\n" + 
+    		"% ---\n" + 
+    		"\n" + 
+    		"\\newcommand{\\quadroname}{Quadro}\n" + 
+    		"\\newcommand{\\listofquadrosname}{Lista de quadros}\n" + 
+    		"\n" + 
+    		"\\newfloat[chapter]{quadro}{loq}{\\quadroname}\n" + 
+    		"\\newlistof{listofquadros}{loq}{\\listofquadrosname}\n" + 
+    		"\\newlistentry{quadro}{loq}{0}\n" + 
+    		"\n" + 
+    		"\\setfloatadjustment{quadro}{\\centering}\n" + 
+    		"\\counterwithout{quadro}{chapter}\n" + 
+    		"\\renewcommand{\\cftquadroname}{\\quadroname\\space} \n" + 
+    		"\\renewcommand*{\\cftquadroaftersnum}{\\hfill--\\hfill}\n" + 
+    		"\n" + 
+    		"\\setfloatlocations{quadro}{hbtp}\n" + 
+    		"% ---\n" + 
+    		"\n" + 
+    		"\\setlength{\\parindent}{1.3cm}\n" + 
+    		"\n" + 
+    		"\\setlength{\\parskip}{0.2cm}\n" + 
+    		"\n" + 
+    		"\\makeindex\n" + 
+    		"\n" + 
+    		"\\begin{document}\n" + 
+    		"\\selectlanguage{brazil}\n" + 
+    		"\\frenchspacing\n" + 
+    		"\n" + 
+    		"\\end{document}");
 
     super.visitChildren(ctx);
 
