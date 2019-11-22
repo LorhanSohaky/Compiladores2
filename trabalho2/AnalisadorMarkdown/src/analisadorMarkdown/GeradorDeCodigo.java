@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 
 import antlr.marktexBaseVisitor;
+import antlr.marktexParser.ContentContext;
 import antlr.marktexParser.DocumentContext;
 
 public class GeradorDeCodigo extends marktexBaseVisitor<String> {
@@ -127,11 +128,18 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\\selectlanguage{brazil}\n" + 
 			"\\frenchspacing\n");
 
-	super.visitContent(ctx.content());
+	visitContent(ctx.content());
 
     saida.println("\\end{document}");
 
     return null;
+  }
+
+  @Override
+  public String visitContent(ContentContext ctx) {
+	  String textoEntrada = ctx.BODY().getText().substring(5,ctx.BODY().getText().length());
+	  System.out.println(textoEntrada);
+	  return null;
   }
 
 }
