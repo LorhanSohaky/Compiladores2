@@ -24,7 +24,7 @@ for i in $(seq 0 $(expr $quantidade_de_testes - 1) ); do
     fi
 done
 
-media=$(echo 'scale=2;' $acertos / $quantidade_de_testes | bc)
+media=$(echo 'scale=2;' $acertos / $quantidade_de_testes *100 | bc)
 
 echo '----! Resultado !----'
 echo 'Acertos:' $acertos
