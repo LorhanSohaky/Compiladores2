@@ -16,8 +16,16 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
 	@Override
   public String visitDocument(DocumentContext ctx) {
-    saida.println("\\documentclass[\n" + 
-    		"	12pt,\n" + 
+	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
+	String tipo = ctx.configs().type().document_type().getText();
+
+	saida.println("\\documentclass[");
+
+	if (tipo.equals("article")){
+		saida.println("	article,");
+	}
+
+	saida.println("	12pt,\n" + 
     		"	openright,\n" + 
     		"	oneside,\n" + 
     		"	a4paper,\n" + 
@@ -52,7 +60,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"	\\else\n" + 
     		"		Citado #1 vezes nas páginas #2.%\n" + 
     		"	\\fi}%\n");
-	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
+	
 	saida.println("\\titulo{" + titulo + "}");
 	saida.println("\\autor{Usuário 0}\n" + 
     		"\\data{26 de Outubro de 2019}\n" + 
@@ -104,8 +112,10 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\n" + 
     		"\\begin{document}\n" + 
     		"\\selectlanguage{brazil}\n" + 
-    		"\\frenchspacing\n");
-    super.visitContent(ctx.content());
+			"\\frenchspacing\n");
+
+	super.visitContent(ctx.content());
+
     saida.println("\\end{document}");
 
     return null;
