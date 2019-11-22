@@ -19,7 +19,8 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   public String visitDocument(DocumentContext ctx) {
 	String tipo = ctx.configs().type().document_type().getText();
 	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
-	List<String> autores = ctx.configs().author().stream().map(item -> item.STRING().getText().replaceAll("\"", "")).collect(Collectors.toList());;
+	List<String> autores = ctx.configs().author().stream().map(item -> item.STRING().getText().replaceAll("\"", "")).collect(Collectors.toList());
+	String data = ctx.configs().date().DATE().getText();
 
 	saida.println("\\documentclass[");
 
@@ -75,8 +76,8 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 		
 	}
 	saida.print("}\n");
-	saida.println("\\data{26 de Outubro de 2019}\n" + 
-    		"\n" + 
+	saida.println("\\data{"+ data +"}");
+	saida.println("\n" + 
     		"\\definecolor{blue}{RGB}{41,5,195}\n" + 
     		"\n" + 
     		"\\makeatletter\n" + 
