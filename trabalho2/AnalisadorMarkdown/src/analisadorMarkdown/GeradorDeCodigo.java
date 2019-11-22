@@ -51,10 +51,10 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"		Citado na página #2.%\n" + 
     		"	\\else\n" + 
     		"		Citado #1 vezes nas páginas #2.%\n" + 
-    		"	\\fi}%\n" + 
-    		"\n" + 
-    		"\\titulo{Teste 0}\n" + 
-    		"\\autor{Usuário 0}\n" + 
+    		"	\\fi}%\n");
+	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
+	saida.println("\\titulo{" + titulo + "}");
+	saida.println("\\autor{Usuário 0}\n" + 
     		"\\data{26 de Outubro de 2019}\n" + 
     		"\n" + 
     		"\\definecolor{blue}{RGB}{41,5,195}\n" + 
@@ -105,7 +105,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\\begin{document}\n" + 
     		"\\selectlanguage{brazil}\n" + 
     		"\\frenchspacing\n");
-    super.visitChildren(ctx);
+    super.visitContent(ctx.content());
     saida.println("\\end{document}");
 
     return null;
