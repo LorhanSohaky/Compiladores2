@@ -3,6 +3,7 @@ package analisadorMarkdown;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 import antlr.marktexBaseVisitor;
@@ -16,8 +17,9 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
 	@Override
   public String visitDocument(DocumentContext ctx) {
-	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
 	String tipo = ctx.configs().type().document_type().getText();
+	String titulo = ctx.configs().title().STRING().getText().replaceAll("\"", "");
+	List<String> autores = ctx.configs().author().stream().map(item -> item.STRING().getText().replaceAll("\"", "")).collect(Collectors.toList());;
 
 	saida.println("\\documentclass[");
 
@@ -62,8 +64,18 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"	\\fi}%\n");
 	
 	saida.println("\\titulo{" + titulo + "}");
-	saida.println("\\autor{Usuário 0}\n" + 
-    		"\\data{26 de Outubro de 2019}\n" + 
+
+	saida.print("\\autor{");
+	while(autores.size()>0){
+		String autor = autores.remove(0);
+		saida.print(autor);
+		if(autores.size()>0){
+			saida.print((" \\and "));
+		}
+		
+	}
+	saida.print("}\n");
+	saida.println("\\data{26 de Outubro de 2019}\n" + 
     		"\n" + 
     		"\\definecolor{blue}{RGB}{41,5,195}\n" + 
     		"\n" + 
