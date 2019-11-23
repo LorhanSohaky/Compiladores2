@@ -19,7 +19,7 @@ Deve gerar um `\footnote{}`
 ## Estilização
 
 ### Itálico
-Regra: `[^\*]\*[^\*]+\*[^\*]`
+Regra: `(\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*)`
 
 Gerar um `\textit{}`
 
