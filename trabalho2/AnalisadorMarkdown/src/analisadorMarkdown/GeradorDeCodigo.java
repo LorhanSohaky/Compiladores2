@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 import antlr.marktexBaseVisitor;
 import antlr.marktexParser.ContentContext;
@@ -137,9 +140,21 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
   @Override
   public String visitContent(ContentContext ctx) {
-	  String textoEntrada = ctx.BODY().getText().substring(5,ctx.BODY().getText().length());
-	  System.out.println(textoEntrada);
+	  String textoEntrada = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
+	  String textoEditado = "";
+	  
+	  textoEditado = replaceItalic(textoEntrada);
+	  
+	  saida.println(textoEditado);
 	  return null;
+  }
+  
+  private String replaceItalic(String texto) {
+	  String regex = "(\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*)";
+
+	  return texto.replaceAll(regex, "\\\\textit{$3}");
   }
 
 }
+
+
