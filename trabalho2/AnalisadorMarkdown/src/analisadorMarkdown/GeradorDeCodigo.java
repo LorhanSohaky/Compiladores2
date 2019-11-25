@@ -143,7 +143,8 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  String textoEntrada = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
 	  String textoEditado = "";
 	  
-	  textoEditado = replaceItalic(textoEntrada);
+	  textoEditado = replaceBold(textoEntrada);
+	  textoEditado = replaceItalic(textoEditado);
 	  
 	  saida.println(textoEditado);
 	  return null;
