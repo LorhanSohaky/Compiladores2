@@ -155,6 +155,11 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  return texto.replaceAll(regex, "\\\\textit{$3}");
   }
 
+  private String replaceBold(String texto) {
+	  String regex = "(\\*\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*\\*)";
+
+	  return texto.replaceAll(regex, "\\\\textbf{$3}");
+  }
 }
 
 
