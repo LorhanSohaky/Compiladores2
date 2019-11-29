@@ -140,13 +140,13 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
   @Override
   public String visitContent(ContentContext ctx) {
-	  String textoEntrada = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
-	  String textoEditado = "";
+	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
 	  
-	  textoEditado = replaceBold(textoEntrada);
-	  textoEditado = replaceItalic(textoEditado);
-	  
-	  saida.println(textoEditado);
+	  texto = replaceHeading(texto);
+	  texto = replaceBold(texto);
+	  texto = replaceItalic(texto);
+
+	  saida.println( texto );
 	  return null;
   }
   
@@ -160,6 +160,32 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  String regex = "(\\*\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*\\*)";
 
 	  return texto.replaceAll(regex, "\\\\textbf{$3}");
+  }
+
+  private String replaceHeading( String texto ) {
+	  texto = replaceHeading3( texto );
+	  texto = replaceHeading2( texto );
+	  texto = replaceHeading1( texto );
+
+	  return texto;
+	}
+
+  private String replaceHeading1( String texto ) {
+	String regex = "#{1}\\s(.*)";
+
+	return texto.replaceAll( regex, "\\\\section{$1}" );
+  }
+
+  private String replaceHeading2( String texto ) {
+	String regex = "#{2}\\s(.*)";
+
+	return texto.replaceAll( regex, "\\\\subsection{$1}" );
+  }
+
+  private String replaceHeading3( String texto ) {
+	String regex = "#{3}\\s(.*)";
+
+	return texto.replaceAll( regex, "\\\\subsubsection{$1}" );
   }
 }
 
