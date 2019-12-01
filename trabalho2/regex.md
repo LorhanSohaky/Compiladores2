@@ -6,14 +6,28 @@ Regra geral: `\[.*\]\(.*\)`
 
 ### Para bibliografia
 
-Regra para a bibliografia:
+Regra para a bibliografia: `\[\@(.*)\]`
 
 Deve gerar um `\cite{}`
 
 ### Para link (URL)
-Regra para link:`\[\@.*\]\(.*\)`
+Regra para link:`[^!]\[(.*)\]\((.*)\)`
 
 Deve gerar um `\footnote{}`
+
+### Para imagem
+
+Regra para a imagem: `\!\[(.*)\]\((.*)\)`
+
+Deve gerar um `
+ \begin{figure*}
+\centering
+\caption{}
+\includegraphics[width=\textwidth]{}
+\end{figure*} 
+`
+
+
 
 
 ## Estilização
