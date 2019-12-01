@@ -173,15 +173,15 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   }
 
   private String[] replaceHeading( String linhas[] ) {
-	  linhas = replaceHeading3( linhas );
-	  linhas = replaceHeading2( linhas );
 	  linhas = replaceHeading1( linhas );
+	  linhas = replaceHeading2( linhas );
+	  linhas = replaceHeading3( linhas );
 
 	  return linhas;
 	}
 
   private String[] replaceHeading1( String linhas[] ) {
-	String regex = "#{1}\\s(.*)";
+	String regex = "^#{1}\\s(.*)";
 
 	for(int i = 0; i < linhas.length; i++){
 		linhas[i] = linhas[i].replaceAll(regex, "\\\\section{$1}");
@@ -190,7 +190,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   }
 
   private String[] replaceHeading2( String linhas[] ) {
-	String regex = "#{2}\\s(.*)";
+	String regex = "^#{2}\\s(.*)";
 
 	for(int i = 0; i < linhas.length; i++){
 		linhas[i] = linhas[i].replaceAll(regex, "\\\\subsection{$1}");
@@ -199,7 +199,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   }
 
   private String[] replaceHeading3( String linhas[] ) {
-	String regex = "#{3}\\s(.*)";
+	String regex = "^#{3}\\s(.*)";
 
 	for(int i = 0; i < linhas.length; i++){
 		linhas[i] = linhas[i].replaceAll(regex, "\\\\subsubsection{$1}");
