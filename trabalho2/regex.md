@@ -11,7 +11,7 @@ Regra para a bibliografia: `\[\@(.*)\]`
 Deve gerar um `\cite{}`
 
 ### Para link (URL)
-Regra para link:`[^!]\[(.*)\]\((.*)\)`
+Regra para link:`[^!]?\[(.*)\]\((.*)\)`
 
 Deve gerar um `\footnote{}`
 
