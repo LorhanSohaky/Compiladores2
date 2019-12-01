@@ -25,8 +25,6 @@ public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 		verifyHeading1(linhas);
 		verifyHeading2(linhas);
 
-		System.out.println(tabelaDeEscopos);
-
 		return null;
 	}
 
