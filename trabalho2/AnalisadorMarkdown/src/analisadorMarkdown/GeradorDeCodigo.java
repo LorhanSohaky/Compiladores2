@@ -157,6 +157,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  linhas = replaceBold(linhas);
 	  linhas = replaceItalic(linhas);
 	  linhas = replaceURL(linhas);
+	  linhas = replaceCite(linhas);
 
 	  for(String linha : linhas){
 	  	saida.println( linha );
@@ -196,9 +197,18 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
 	for(int i = 0; i < linhas.length; i++){
 		linhas[i] = linhas[i].replaceAll(regex, "\\\\href{$2}{$1}");
-  }
+		}
 	return linhas;
-}
+	}
+	
+  private String[] replaceCite(String linhas[]) {
+	String regex = "\\[@((.*))\\]";
+
+	for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\cite\\{$1}");
+		}
+	return linhas;
+	}
 
   private String[] replaceHeading( String linhas[] ) {
 	  linhas = replaceHeading1( linhas );
