@@ -141,51 +141,70 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   @Override
   public String visitContent(ContentContext ctx) {
 	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
+	  String linhas[] = texto.split("\\r?\\n");
 	  
-	  texto = replaceHeading(texto);
-	  texto = replaceBold(texto);
-	  texto = replaceItalic(texto);
+	  linhas = replaceHeading(linhas);
+	  linhas = replaceBold(linhas);
+	  linhas = replaceItalic(linhas);
 
-	  saida.println( texto );
+	  for(String linha : linhas){
+	  	saida.println( linha );
+	  }
+
 	  return null;
   }
   
-  private String replaceItalic(String texto) {
+  private String[] replaceItalic(String linhas[]) {
 	  String regex = "(\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*)";
 
-	  return texto.replaceAll(regex, "\\\\textit{$3}");
+	  for(int i = 0; i < linhas.length; i++){
+	  	linhas[i] = linhas[i].replaceAll(regex, "\\\\textit{$3}");
+	  }
+	  return linhas;
   }
 
-  private String replaceBold(String texto) {
+  private String[] replaceBold(String linhas[]) {
 	  String regex = "(\\*\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*\\*)";
 
-	  return texto.replaceAll(regex, "\\\\textbf{$3}");
+	  for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\textbf{$3}");
+	}
+	  return linhas;
   }
 
-  private String replaceHeading( String texto ) {
-	  texto = replaceHeading3( texto );
-	  texto = replaceHeading2( texto );
-	  texto = replaceHeading1( texto );
+  private String[] replaceHeading( String linhas[] ) {
+	  linhas = replaceHeading3( linhas );
+	  linhas = replaceHeading2( linhas );
+	  linhas = replaceHeading1( linhas );
 
-	  return texto;
+	  return linhas;
 	}
 
-  private String replaceHeading1( String texto ) {
+  private String[] replaceHeading1( String linhas[] ) {
 	String regex = "#{1}\\s(.*)";
 
-	return texto.replaceAll( regex, "\\\\section{$1}" );
+	for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\section{$1}");
+	}
+	return linhas;
   }
 
-  private String replaceHeading2( String texto ) {
+  private String[] replaceHeading2( String linhas[] ) {
 	String regex = "#{2}\\s(.*)";
 
-	return texto.replaceAll( regex, "\\\\subsection{$1}" );
+	for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\subsection{$1}");
+	}
+	return linhas;
   }
 
-  private String replaceHeading3( String texto ) {
+  private String[] replaceHeading3( String linhas[] ) {
 	String regex = "#{3}\\s(.*)";
 
-	return texto.replaceAll( regex, "\\\\subsubsection{$1}" );
+	for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\subsubsection{$1}");
+	}
+	return linhas;
   }
 }
 
