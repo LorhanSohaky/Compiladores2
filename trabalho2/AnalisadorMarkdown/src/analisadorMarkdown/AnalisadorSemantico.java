@@ -24,6 +24,7 @@ public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 
 		verifyHeading1(linhas);
 		verifyHeading2(linhas);
+		verifyHeading3(linhas);
 
 		return null;
 	}
@@ -51,21 +52,44 @@ public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 	private String[] verifyHeading2(String linhas[]){
 		String regex = "^#{2}\\s(.*)";
 		for(int i = 0; i < linhas.length; i++){
+			String msgError = "Erro na linha "+(i+1)+": "+linhas[i]+" deveria estar dentro de um Heading1";
 			if(linhas[i].matches(regex)){
 				if(!tabelaDeEscopos.containsKey("H1")){
-					saida.println("Erro na linha "+(i+1)+": "+linhas[i]+" deveria estar dentro de um Heading1");
-					return null;
+					saida.println(msgError);
 				} else{
 					final int line = i;
 					Predicate<Integer> byLine = item -> item < line;
 					Stream<Integer> items = tabelaDeEscopos.get("H1").stream().filter(byLine);
 					List<Integer> list = items.collect(Collectors.toList());
 					if(list.size()==0){
-						saida.println("Erro na linha "+(i+1)+": "+linhas[i]+" deveria estar dentro de um Heading1");
-						return null;
+						saida.println(msgError);
+
 					}
 				}
 				addOrUpdateItem("H2",i);
+			}
+		}
+		return linhas;
+	}
+
+	private String[] verifyHeading3(String linhas[]){
+		String regex = "^#{3}\\s(.*)";
+		for(int i = 0; i < linhas.length; i++){
+			String msgError= "Erro na linha "+(i+1)+": "+linhas[i]+" deveria estar dentro de um Heading2";
+			if(linhas[i].matches(regex)){
+				if(!tabelaDeEscopos.containsKey("H2")){
+					saida.println(msgError);
+				} else{
+					final int line = i;
+					Predicate<Integer> byLine = item -> item < line;
+					Stream<Integer> items = tabelaDeEscopos.get("H2").stream().filter(byLine);
+					List<Integer> list = items.collect(Collectors.toList());
+					if(list.size()==0){
+						saida.println(msgError);
+
+					}
+				}
+				addOrUpdateItem("H3",i);
 			}
 		}
 		return linhas;
