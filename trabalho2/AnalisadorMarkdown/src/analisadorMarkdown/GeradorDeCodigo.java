@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import antlr.marktexBaseVisitor;
 import antlr.marktexParser.ContentContext;
 import antlr.marktexParser.DocumentContext;
+import antlr.marktexParser.ReferenceContext;
+import antlr.marktexParser.ReferencesContext;
 
 public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	SaidaParser saida = SaidaParser.getInstance();
@@ -48,7 +50,8 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\\usepackage{indentfirst}\n" + 
     		"\\usepackage{color}\n" + 
     		"\\usepackage{graphicx}\n" + 
-    		"\\usepackage{microtype}\n" + 
+			"\\usepackage{microtype}\n" + 
+			"\\usepackage{filecontents}\n"+
     		"\n" + 
     		"\\usepackage[brazilian,hyperpageref]{backref}\n" + 
     		"\\usepackage[alf]{abntex2cite}\n" + 
@@ -81,6 +84,12 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	}
 	saida.print("}\n");
 	saida.println("\\data{"+ data +"}");
+
+	if(ctx.references() != null){
+		saida.println("\\begin{filecontents}{bibliography.bib}");
+		visitReferences(ctx.references());
+		saida.println("\\end{filecontents}");
+	}
 	saida.println("\n" + 
     		"\\definecolor{blue}{RGB}{41,5,195}\n" + 
     		"\n" + 
@@ -133,14 +142,15 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 
 	visitContent(ctx.content());
 
-    saida.println("\\end{document}");
+	saida.println("\\bibliography{bibliography}");
+	saida.println("\\end{document}");
 
     return null;
   }
 
   @Override
   public String visitContent(ContentContext ctx) {
-	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
+	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length()-5);
 	  String linhas[] = texto.split("\\r?\\n");
 	  
 	  linhas = replaceHeading(linhas);
@@ -153,6 +163,14 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  }
 
 	  return null;
+  }
+
+  @Override
+  public String visitReferences(ReferencesContext ctx) {
+	for (ReferenceContext referencia : ctx.referencias) {
+		saida.println(referencia.getText());
+	}
+	return null;
   }
   
   private String[] replaceItalic(String linhas[]) {
