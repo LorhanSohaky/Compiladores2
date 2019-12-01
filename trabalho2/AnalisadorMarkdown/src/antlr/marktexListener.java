@@ -97,4 +97,24 @@ public interface marktexListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitContent(marktexParser.ContentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link marktexParser#references}.
+	 * @param ctx the parse tree
+	 */
+	void enterReferences(marktexParser.ReferencesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link marktexParser#references}.
+	 * @param ctx the parse tree
+	 */
+	void exitReferences(marktexParser.ReferencesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link marktexParser#reference}.
+	 * @param ctx the parse tree
+	 */
+	void enterReference(marktexParser.ReferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link marktexParser#reference}.
+	 * @param ctx the parse tree
+	 */
+	void exitReference(marktexParser.ReferenceContext ctx);
 }

@@ -119,6 +119,30 @@ public class marktexBaseListener implements marktexListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitContent(marktexParser.ContentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReferences(marktexParser.ReferencesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReferences(marktexParser.ReferencesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReference(marktexParser.ReferenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReference(marktexParser.ReferenceContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

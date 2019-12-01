@@ -64,4 +64,16 @@ public interface marktexVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitContent(marktexParser.ContentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link marktexParser#references}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReferences(marktexParser.ReferencesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link marktexParser#reference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReference(marktexParser.ReferenceContext ctx);
 }
