@@ -4,17 +4,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import antlr.marktexBaseVisitor;
 import antlr.marktexParser.ContentContext;
+import antlr.marktexParser.DocumentContext;
+import antlr.marktexParser.ReferencesContext;
 
 public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 
 	SaidaParser saida = SaidaParser.getInstance();
 	HashMap<String, List<Integer>> tabelaDeEscopos= new HashMap<String, List<Integer>>();
-	HashMap<String, List<EntradaTabelaDeSimbolos>> tabelaDeReferencias= new HashMap<String, List<EntradaTabelaDeSimbolos>>();
+	List<String> tabelaDeReferencias= new ArrayList<String>();
+
+	@Override
+	public String visitDocument(DocumentContext ctx) {
+		visitConfigs(ctx.configs());
+		if(ctx.references()!=null){
+			visitReferences(ctx.references());
+		}
+		visitContent(ctx.content());
+		return null;
+	}
 
 
 	@Override
@@ -22,6 +36,7 @@ public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 		String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length());
 		String linhas[] = texto.split("\\r?\\n");
 
+		verifyReferences(linhas);
 		verifyHeading1(linhas);
 		verifyHeading2(linhas);
 		verifyHeading3(linhas);
@@ -93,5 +108,34 @@ public class AnalisadorSemantico extends marktexBaseVisitor<String> {
 			}
 		}
 		return linhas;
+	}
+
+	private String[] verifyReferences(String linhas[]){
+		String regex = "\\[\\@(.*)\\]";
+		final Pattern pattern = Pattern.compile(regex);
+		for(int i = 0; i < linhas.length; i++){
+			Matcher matcher = pattern.matcher(linhas[i]);
+			if(matcher.find()){
+				if(!tabelaDeReferencias.contains(matcher.group(1))){
+					String msgError= "Erro na linha "+(i+1)+": referência "+matcher.group(1)+" não foi encontrada";
+					saida.println(msgError);
+				}
+			}
+		}
+		return linhas;
+	}
+
+	@Override
+	public String visitReferences(ReferencesContext ctx) {
+		for( int i =0; i < ctx.referencias.size(); i++){
+			String alias = ctx.referencias.get(i).ALIAS().getText();
+			if(tabelaDeReferencias.contains(alias)){
+				String msgError= "Erro na linha "+(i+1)+": a referência "+ alias  +" já foi declarada anteriormente";
+				saida.println(msgError);
+			}else{
+				tabelaDeReferencias.add(alias);
+			}
+		}
+		return null;
 	}
 }
