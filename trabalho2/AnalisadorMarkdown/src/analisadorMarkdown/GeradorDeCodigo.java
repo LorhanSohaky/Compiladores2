@@ -155,6 +155,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  linhas = replaceItalic(linhas);
 	  linhas = replaceURL(linhas);
 	  linhas = replaceCite(linhas);
+	  linhas = replaceQuote(linhas);
 
 	  for(String linha : linhas){
 	  	saida.println( linha );
@@ -239,6 +240,29 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	for(int i = 0; i < linhas.length; i++){
 		linhas[i] = linhas[i].replaceAll(regex, "\\\\subsubsection{$1}");
 	}
+	return linhas;
+  }
+
+  private String[] replaceQuote(String linhas[]){
+	String regex ="\\>\\s(.+)";
+	int i = 0;
+	do{
+		while(i < linhas.length && !linhas[i].matches(regex)){
+			i++;
+		}
+		if(i < linhas.length && linhas[i].matches(regex)){
+			linhas[i] = "\\begin{quote}\n"+linhas[i].replaceAll(regex, "$1");
+			i++;
+			while( i < linhas.length && linhas[i].matches(regex)){
+				linhas[i] = linhas[i].replaceAll(regex, "$1");
+				i++;
+			}
+			if(i - 1 < linhas.length ){
+				linhas[i-1] = linhas[i-1]+"\n\\end{quote}";
+			}
+		}
+	}while(i < linhas.length);
+
 	return linhas;
   }
 }
