@@ -159,6 +159,7 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 	  linhas = replaceCite(linhas);
 	  linhas = replaceQuote(linhas);
 	  linhas = replaceEnumerate(linhas);
+	  linhas = replaceItemize(linhas);
 
 	  for(String linha : linhas){
 	  	saida.println( linha );
@@ -285,6 +286,29 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 			}
 			if(i - 1 < linhas.length ){
 				linhas[i-1] = linhas[i-1]+"\n\\end{enumerate}";
+			}
+		}
+	}while(i < linhas.length);
+
+	return linhas;
+  }
+
+  private String[] replaceItemize(String linhas[]){
+	String regex ="\\-\\s(.+)";
+	int i = 0;
+	do{
+		while(i < linhas.length && !linhas[i].matches(regex)){
+			i++;
+		}
+		if(i < linhas.length && linhas[i].matches(regex)){
+			linhas[i] = "\\begin{itemize}\n"+linhas[i].replaceAll(regex, "\\\\item $1");
+			i++;
+			while( i < linhas.length && linhas[i].matches(regex)){
+				linhas[i] = linhas[i].replaceAll(regex, "\\\\item $1");
+				i++;
+			}
+			if(i - 1 < linhas.length ){
+				linhas[i-1] = linhas[i-1]+"\n\\end{itemize}";
 			}
 		}
 	}while(i < linhas.length);
