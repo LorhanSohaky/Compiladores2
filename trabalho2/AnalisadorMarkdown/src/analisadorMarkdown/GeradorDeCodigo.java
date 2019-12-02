@@ -150,11 +150,13 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   @Override
   public String visitContent(ContentContext ctx) {
 	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length()-5);
+
 	  String linhas[] = texto.split("\\r?\\n");
 	  
 	  linhas = replaceHeading(linhas);
 	  linhas = replaceBold(linhas);
 	  linhas = replaceItalic(linhas);
+	  linhas = replaceImage(linhas);
 	  linhas = replaceURL(linhas);
 	  linhas = replaceCite(linhas);
 	  linhas = replaceQuote(linhas);
@@ -313,6 +315,19 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 		}
 	}while(i < linhas.length);
 
+	return linhas;
+  }
+
+  private String[] replaceImage(String linhas[]){
+	  String regex = "\\!\\[(.*?)\\]\\((.*?)\\)";
+
+	  for(int i = 0; i < linhas.length; i++){
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\begin{figure*}\n"+
+		"\\\\centering\n"+
+		"\\\\caption{$1}\n"+
+		"\\\\includegraphics[width=\\\\\\textwidth]{$2}\n"+
+		"\\\\end{figure*}");
+		}
 	return linhas;
   }
 }
