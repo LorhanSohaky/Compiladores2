@@ -138,7 +138,9 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\n" + 
     		"\\begin{document}\n" + 
     		"\\selectlanguage{brazil}\n" + 
-			"\\frenchspacing\n");
+			"\\frenchspacing\n" +
+			"\\imprimircapa\n" +
+			"\\imprimirfolhaderosto\n");
 
 	visitContent(ctx.content());
 
