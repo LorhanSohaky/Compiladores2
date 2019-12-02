@@ -21,9 +21,9 @@
 \usepackage[brazilian,hyperpageref]{backref}
 \usepackage[alf]{abntex2cite}
 
-% --- 
+% ---
 % CONFIGURAÇÕES DE PACOTES
-% --- 
+% ---
 
 \renewcommand{\backrefpagesname}{Citado na(s) página(s):~}
 \renewcommand{\backref}{}
@@ -44,11 +44,11 @@
 
 \makeatletter
 \hypersetup{
-		pdftitle={\@title}, 
+		pdftitle={\@title},
 		pdfauthor={\@author},
     	pdfsubject={\imprimirpreambulo},
 	    pdfcreator={LaTeX with abnTeX2},
-		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico}, 
+		pdfkeywords={abnt}{latex}{abntex}{abntex2}{trabalho acadêmico},
 		colorlinks=true,
     	linkcolor=blue,
     	citecolor=blue,
@@ -57,7 +57,7 @@
 		bookmarksdepth=4
 }
 \makeatother
-% --- 
+% ---
 
 \makeatletter
 \setlength{\@fptop}{5pt}
@@ -73,7 +73,7 @@
 
 \setfloatadjustment{quadro}{\centering}
 \counterwithout{quadro}{chapter}
-\renewcommand{\cftquadroname}{\quadroname\space} 
+\renewcommand{\cftquadroname}{\quadroname\space}
 \renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
 
 \setfloatlocations{quadro}{hbtp}
@@ -88,6 +88,8 @@
 \begin{document}
 \selectlanguage{brazil}
 \frenchspacing
+\imprimircapa
+\imprimirfolhaderosto
 
 Listas:
 \begin{enumerate}
