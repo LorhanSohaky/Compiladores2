@@ -185,10 +185,10 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   }
   
   private String[] replaceItalic(String linhas[]) {
-	  String regex = "(\\*)(\\s*\\b)([^\\*]*)(\\b\\s*)(\\*)";
+	  String regex = "\\*([^\\*]+)\\*";
 
 	  for(int i = 0; i < linhas.length; i++){
-	  	linhas[i] = linhas[i].replaceAll(regex, "\\\\textit{$3}");
+	  	linhas[i] = linhas[i].replaceAll(regex, "\\\\textit{$1}");
 	  }
 	  return linhas;
   }
@@ -203,10 +203,10 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   }
 
   private String[] replaceURL(String linhas[]) {
-	String regex = "[^!]?\\[(.*)\\]\\((.*)\\)";
+	String regex = "\\[\\s?(([^\\[ ])+)\\s?\\]\\(\\s?(([^\\[ ])+)\\s?\\)";
 
 	for(int i = 0; i < linhas.length; i++){
-		linhas[i] = linhas[i].replaceAll(regex, "\\\\href{$2}{$1}");
+		linhas[i] = linhas[i].replaceAll(regex, "\\\\href{$3}{$1}");
 		}
 	return linhas;
 	}
