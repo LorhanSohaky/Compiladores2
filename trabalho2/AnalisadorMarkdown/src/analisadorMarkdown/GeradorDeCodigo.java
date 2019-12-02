@@ -48,8 +48,12 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
     		"\\usepackage{color}\n" + 
     		"\\usepackage{graphicx}\n" + 
 			"\\usepackage{microtype}\n" + 
-			"\\usepackage{filecontents}\n"+
-    		"\n" + 
+			"\\usepackage{filecontents}");
+	if(ctx.configs().header_includes()!=null){
+		String headers = ctx.configs().header_includes().getText();
+		saida.println(headers.substring(17,headers.length()-1));
+	}
+	saida.println("\n" + 
     		"\\usepackage[brazilian,hyperpageref]{backref}\n" + 
     		"\\usepackage[alf]{abntex2cite}\n" + 
     		"\n" + 
@@ -150,6 +154,8 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
   @Override
   public String visitContent(ContentContext ctx) {
 	  String texto = ctx.BODY().getText().substring(6,ctx.BODY().getText().length()-5);
+
+	  texto = replaceCode(texto);
 
 	  String linhas[] = texto.split("\\r?\\n");
 	  
@@ -329,6 +335,14 @@ public class GeradorDeCodigo extends marktexBaseVisitor<String> {
 		"\\\\end{figure*}");
 		}
 	return linhas;
+  }
+
+  private String replaceCode(String texto){
+	String regex = "\\`\\`\\`(.+)\\s([^\\`]+)\\`\\`\\`";
+
+	return texto.replaceAll(regex, "\\\\begin{lstlisting}[language=$1]\n"+
+	"$2"+
+	"\\\\end{lstlisting}");
   }
 }
 
